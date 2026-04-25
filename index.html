@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#2c5f26"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>🛒 הסל שלנו</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
+:root{--g:#2c5f26;--gl:#e8f5e4;--gm:#4a8c42;--y:#f5c842;--bd:#e2d9cc;--bg:#f7f3ee;--tx:#2a2018;--mt:#9a8a78;--rd:#d94f3d;}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+.hdr{background:var(--g);color:white;position:sticky;top:0;z-index:100;box-shadow:0 3px 12px rgba(0,0,0,.25);}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 9px;}
+.title{font-size:20px;font-weight:900;letter-spacing:-.5px;}
+.hdr-actions{display:flex;align-items:center;gap:7px;}
+.icon-btn{background:rgba(255,255,255,.15);border:none;color:white;border-radius:20px;padding:5px 11px;font-family:Heebo;font-size:13px;cursor:pointer;white-space:nowrap;}
+.icon-btn.hl{background:rgba(255,220,0,.35);}
+.badge{background:var(--y);color:#1a1a00;border-radius:20px;padding:2px 10px;font-size:13px;font-weight:800;}
+.tabs{display:flex;border-top:1px solid rgba(255,255,255,.1);}
+.tab{flex:1;padding:9px 0;border:none;background:transparent;color:rgba(255,255,255,.6);font-family:Heebo;font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;}
+.tab.active{color:white;border-bottom-color:var(--y);background:rgba(255,255,255,.08);}
+.search-wrap{padding:8px 14px 10px;background:var(--g);border-top:1px solid rgba(255,255,255,.1);}
+.search-rel{position:relative;}
+.search-inp{width:100%;padding:9px 14px 9px 34px;border:none;border-radius:10px;font-family:Heebo;font-size:15px;direction:rtl;background:rgba(255,255,255,.95);outline:none;color:var(--tx);}
+.search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+.cat-hd{padding:10px 16px 5px;font-size:11px;font-weight:800;color:var(--mt);letter-spacing:1px;text-transform:uppercase;background:var(--bg);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.cat-hd:hover{background:#ede8e2;}
+.cat-hd-left{display:flex;align-items:center;gap:6px;}
+.cat-sel-hint{font-size:10px;font-weight:600;color:var(--gm);opacity:.8;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:5px 14px 12px;align-items:center;}
+.chip-wrap{display:inline-flex;align-items:center;}
+.chip{padding:7px 12px;border-radius:22px;border:1.5px solid var(--bd);background:white;color:#555;font-family:Heebo;font-size:13.5px;cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;}
+.chip.on{border-color:var(--g);background:var(--gl);color:var(--g);font-weight:700;border-radius:22px 0 0 22px;}
+.chip.fav:not(.on){border-color:var(--y);background:#fffbec;}
+.chip:active{transform:scale(.96);}
+.chip-menu-btn{padding:6px 9px;border-radius:0 22px 22px 0;border:1.5px solid var(--g);border-left:1px solid rgba(44,95,38,.25);background:var(--gl);color:var(--g);font-size:12px;cursor:pointer;}
+.chip-menu-btn:hover{background:#d4ecd0;}
+.chip-add{padding:6px 11px;border-radius:22px;border:1.5px dashed var(--bd);background:transparent;color:var(--mt);font-family:Heebo;font-size:13px;cursor:pointer;transition:all .15s;}
+.chip-add:hover{border-color:var(--gm);color:var(--gm);background:var(--gl);}
+.add-inline{display:flex;align-items:center;gap:6px;}
+.add-inp{padding:6px 10px;border-radius:10px;border:1.5px solid var(--gm);font-family:Heebo;font-size:14px;direction:rtl;outline:none;width:130px;background:white;color:var(--tx);}
+.add-ok{padding:6px 11px;border-radius:10px;border:none;background:var(--g);color:white;font-family:Heebo;font-size:13px;font-weight:700;cursor:pointer;}
+.add-x{padding:6px 9px;border-radius:10px;border:none;background:#eee;color:#888;font-family:Heebo;font-size:13px;cursor:pointer;}
+.prog-wrap{background:white;padding:12px 16px 10px;border-bottom:1px solid var(--bd);}
+.prog-track{height:8px;background:#e8e0d5;border-radius:6px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--g);border-radius:6px;transition:width .4s ease;}
+.prog-text{display:flex;justify-content:space-between;margin-top:6px;font-size:12.5px;color:var(--mt);font-weight:500;}
+.shop-cat{font-size:12px;font-weight:800;letter-spacing:.8px;color:var(--mt);text-transform:uppercase;padding:10px 16px 4px;background:var(--bg);display:flex;align-items:center;gap:5px;}
+.shop-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-bottom:1px solid #f0e8df;user-select:none;}
+.shop-item.done{opacity:.4;}
+.shop-left{display:flex;align-items:center;gap:12px;flex:1;cursor:pointer;}
+.chk{width:24px;height:24px;border-radius:7px;border:2px solid #ccc;background:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.chk.on{border-color:var(--g);background:var(--g);}
+.chk-ico{color:white;font-size:12px;font-weight:900;}
+.iname{font-size:15px;font-weight:500;color:var(--tx);}
+.iname.done{text-decoration:line-through;color:#bbb;}
+.qty-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bd);background:white;color:var(--tx);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.qty-btn:hover{border-color:var(--g);color:var(--g);}
+.qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center;}
+.bot{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;border-top:1.5px solid var(--bd);padding:10px 14px;display:flex;gap:9px;z-index:200;}
+.btn-p{flex:1;padding:12px;background:var(--g);color:white;border:none;border-radius:12px;font-family:Heebo;font-size:15px;font-weight:700;cursor:pointer;}
+.btn-s{padding:12px 14px;background:var(--bg);color:var(--mt);border:1.5px solid var(--bd);border-radius:12px;font-family:Heebo;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.btn-d{padding:12px 14px;background:#fff0ee;color:var(--rd);border:1.5px solid #f5ccc8;border-radius:12px;font-family:Heebo;font-size:14px;cursor:pointer;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
+.sheet{background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:12px 0 30px;max-height:80vh;overflow-y:auto;}
+.sheet-drag{width:40px;height:4px;background:#ddd;border-radius:4px;margin:0 auto 12px;}
+.sheet-title{font-size:17px;font-weight:800;color:var(--tx);padding:4px 20px 14px;border-bottom:1px solid var(--bd);margin-bottom:4px;}
+.sheet-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-family:Heebo;font-size:15px;color:var(--tx);border:none;background:transparent;width:100%;text-align:right;}
+.sheet-row:hover{background:#f8f4f0;}
+.sheet-row.red{color:var(--rd);}
+.sheet-row.close{color:var(--mt);font-size:14px;}
+.qty-stepper{display:flex;align-items:center;gap:14px;}
+.sq-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.sq-btn:hover{border-color:var(--g);color:var(--g);}
+.sq-num{font-size:18px;font-weight:800;min-width:28px;text-align:center;}
+.hist-item{padding:6px 20px;font-size:14px;color:#555;display:flex;align-items:center;gap:8px;}
+.hist-actions{padding:12px 16px 0;display:flex;gap:9px;}
+.scroll{padding-bottom:90px;}
+.empty{text-align:center;padding:70px 20px;color:var(--mt);}
+.empty-ico{font-size:50px;margin-bottom:10px;}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:var(--mt);gap:12px;}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.hint{text-align:center;padding:14px 0 2px;font-size:13px;color:var(--mt);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:4px;}
+.sync-dot.off{background:#f87171;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="loading"><div class="loading-spinner"></div><span>מתחבר...</span></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ─── Firebase Config ──────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyDuMMpmyaoRNPlsICSDetMBCTOPhfqrA9w",
+  authDomain: "grocery-e18a6.firebaseapp.com",
+  projectId: "grocery-e18a6",
+  storageBucket: "grocery-e18a6.firebasestorage.app",
+  messagingSenderId: "743023364500",
+  appId: "1:743023364500:web:8b10af56fb318c0f342781"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+const docRef = doc(db, "grocery", "shared");
+
+// ─── Categories ───────────────────────────────────────────────
+const BASE_CATS = [
+  {id:"veggies",  emoji:"🥬", label:"ירקות",      items:[["מלפפונים","🥒"],["עגבניות","🍅"],["חסה","🥬"],["כרובית",""],["פטריות","🍄"],["נבטים","🌱"],["בצל ירוק",""],["חצילים","🍆"],["בצל",""],["כרוב",""],["פלפלים",""],["גזר","🥕"],["כוסברה",""],["פטרוזיליה",""],["בטטות","🍠"],["קישואים",""],["שום",""],["עגבניות שרי",""],["כרישה",""],["סלרי",""],["קולרבי",""],["דלעת","🎃"]]},
+  {id:"fruits",   emoji:"🍎", label:"פירות",      items:[["אבוקדו","🥑"],["לימונים","🍋"],["בננות","🍌"],["תמרים","🌴"],["תפוחים","🍎"],["קלמנטינות",""],["אבטיח",""],["אפרסקים",""],["תותים","🍓"],["אגסים","🍐"],["אוכמניות",""],["פירות",""]]},
+  {id:"dairy",    emoji:"🥛", label:"חלב וביצים", items:[["חלב","🥛"],["ביצים","🥚"],["חמאה",""],["גבינה טבעונית",""],["יוגורט טבעוני",""],["יוגורט רגיל",""],["גבינה צהובה",""],["פילדלפיה",""],["שמנת לבישול",""],["שמנת להקצפה",""],["פילמיולק",""],["חלב שקדים",""],["גרדפיל",""]]},
+  {id:"bread",    emoji:"🍞", label:"לחם ומאפים", items:[["לחם לילדות","🍞"],["לחם למיכאל","🍞"],["פיתות",""]]},
+  {id:"dry",      emoji:"🌾", label:"מזון יבש",   items:[["שיבולת שועל",""],["חומוס לבישול",""],["אורז","🌾"],["בורגול",""],["קוסקוס",""],["פסטה",""],["קמח",""],["סוכר",""],["מלח דק",""],["גרנולה",""],["קקאו",""],["קינמון",""],["תמצית וניל",""],["גרעיני דלעת",""],["גרעיני חמנייה",""],["שמרים",""]]},
+  {id:"preserves",emoji:"🫙", label:"שימורים",    items:[["שמן זית",""],["קטשופ",""],["מיונז",""],["ריבה",""],["דבש",""],["שקדייה",""],["חמאת בוטנים",""],["מייפל",""],["סילאן",""],["פסטו",""],["רסק תפוחים",""],["עגבניות מרוסקות",""],["שימורי עגבניות",""],["קוקוס טחון","🥥"],["חלב קוקוס",""],["גרגירי חומוס",""],["תירס",""]]},
+  {id:"frozen",   emoji:"🧊", label:"קפואים",     items:[["שעועית ירוקה",""],["potatisbullar",""],["fiskpinnar",""]]},
+  {id:"protein",  emoji:"🍗", label:"בשר ודגים",  items:[["עוף","🍗"],["בשר בקר","🥩"],["דג סלמון","🐟"],["נקניקיות",""],["כדורי בשר",""],["טונה",""],["טופו",""]]},
+  {id:"texmex",   emoji:"🌮", label:"Tex-Mex",    items:[["טורטיות",""],["תבלין טאקו",""],["נאצ'וס",""],["סלסה",""]]},
+  {id:"drinks",   emoji:"☕", label:"שתייה",      items:[["קפה","☕"],["תה","🍵"],["סודה",""],["מיץ תפוזים",""],["תירוש",""]]},
+  {id:"cleaning", emoji:"🧹", label:"ניקיון",     items:[["נייר טואלט",""],["טישו",""],["נייר אפייה",""],["נייר מטבח",""],["מילוי לסבון",""],["אבקת כביסה",""],["טבליות למדיח",""],["מלח למדיח",""],["מבריק למדיח",""],["סודה לשתייה",""],["נרות",""]]},
+  {id:"hygiene",  emoji:"🪥", label:"היגיינה",    items:[["מי פה","👄"],["מרכך לילדות",""],["משחת שיניים לילדות",""],["מברשת שיניים",""],["ראשים למברשות שיניים",""],["חוט דנטלי",""],["שמפו לילדות",""],["סבון לילדות",""]]},
+  {id:"snacks",   emoji:"🍪", label:"חטיפים",     items:[["עוגיות",""],["עוגיות יוטיבורי",""],["fruktstång",""],["תמרים למיכאל","🌴"],["תמרים לבנות","🌴"],["מנגו מיובש","🥭"],["נוטלה טבעונית",""],["גודיס","🍬"]]},
+];
+
+// ─── State ────────────────────────────────────────────────────
+let state = {
+  needed: new Set(), bought: new Set(),
+  custom: {}, quantities: {}, favorites: new Set(), history: null,
+};
+let mode = "plan", search = "", addingIn = null, addDraft = "";
+let menu = null, showHist = false;
+let connected = false;
+let ignoreNext = false; // prevent echo from own saves
+
+// ─── Firestore ────────────────────────────────────────────────
+async function saveToFirestore() {
+  ignoreNext = true;
+  try {
+    await setDoc(docRef, {
+      needed: [...state.needed],
+      bought: [...state.bought],
+      custom: state.custom,
+      quantities: state.quantities,
+      favorites: [...state.favorites],
+      history: state.history || null,
+    });
+  } catch(e) { console.warn("save failed", e); }
+}
+
+function mergeRemote(data) {
+  if (!data) return;
+  const rn = new Set(data.needed || []);
+  const rb = new Set(data.bought || []);
+  // merge needed (union), bought (intersect with merged needed)
+  state.needed = new Set([...state.needed, ...rn]);
+  state.bought = new Set([...[...state.bought].filter(x=>state.needed.has(x)), ...[...rb].filter(x=>state.needed.has(x))]);
+  // merge custom
+  const rc = data.custom || {};
+  for (const [k,v] of Object.entries(rc)) {
+    const s = new Set(state.custom[k]||[]);
+    v.forEach(i=>s.add(i));
+    state.custom[k] = [...s];
+  }
+  // merge quantities & favorites
+  state.quantities = { ...data.quantities, ...state.quantities };
+  state.favorites = new Set([...state.favorites, ...(data.favorites||[])]);
+  if (!state.history && data.history) state.history = data.history;
+}
+
+// ─── Init & real-time listener ────────────────────────────────
+async function init() {
+  try {
+    const snap = await getDoc(docRef);
+    if (snap.exists()) mergeRemote(snap.data());
+    connected = true;
+  } catch(e) { console.warn("init failed", e); }
+
+  // Real-time updates
+  onSnapshot(docRef, snap => {
+    if (ignoreNext) { ignoreNext = false; return; }
+    if (snap.exists()) { mergeRemote(snap.data()); render(); }
+    connected = true;
+  }, err => { connected = false; render(); });
+
+  render();
+}
+
+// ─── Mutations ────────────────────────────────────────────────
+function toggleNeeded(name) {
+  if (state.needed.has(name)) { state.needed.delete(name); state.bought.delete(name); }
+  else state.needed.add(name);
+  saveToFirestore(); render();
+}
+function toggleBought(name) {
+  state.bought.has(name) ? state.bought.delete(name) : state.bought.add(name);
+  saveToFirestore(); render();
+}
+function toggleCat(catId) {
+  const cat = categories().find(c=>c.id===catId);
+  if (!cat) return;
+  const allSel = cat.items.every(([n])=>state.needed.has(n));
+  cat.items.forEach(([n]) => allSel ? state.needed.delete(n) : state.needed.add(n));
+  saveToFirestore(); render();
+}
+function toggleFav(name) {
+  state.favorites.has(name) ? state.favorites.delete(name) : state.favorites.add(name);
+  saveToFirestore(); render();
+}
+function adjustQty(name, delta) {
+  const cur = (state.quantities[name]||1) + delta;
+  if (cur <= 1) delete state.quantities[name]; else state.quantities[name] = Math.min(cur, 99);
+  saveToFirestore(); render();
+}
+function addFavsToNeeded() {
+  state.favorites.forEach(n => state.needed.add(n));
+  saveToFirestore(); render();
+}
+async function confirmAdd(catId) {
+  const name = addDraft.trim(); if (!name) { addingIn=null; addDraft=""; render(); return; }
+  const cat = categories().find(c=>c.id===catId);
+  if (!cat?.items.some(([n])=>n===name)) {
+    if (!state.custom[catId]) state.custom[catId] = [];
+    state.custom[catId].push(name);
+    state.needed.add(name);
+  }
+  addingIn=null; addDraft=""; saveToFirestore(); render();
+}
+function deleteCustom(name, catId) {
+  state.custom[catId] = (state.custom[catId]||[]).filter(n=>n!==name);
+  state.needed.delete(name); state.bought.delete(name);
+  menu=null; saveToFirestore(); render();
+}
+function finishShopping() {
+  const justBought = [...state.needed].filter(n=>state.bought.has(n));
+  if (justBought.length > 0) state.history = { needed: justBought, quantities: {...state.quantities} };
+  state.needed = new Set([...state.needed].filter(n=>!state.bought.has(n)));
+  state.bought = new Set();
+  saveToFirestore(); render();
+}
+function restoreHistory() {
+  if (!state.history) return;
+  state.history.needed.forEach(n=>state.needed.add(n));
+  if (state.history.quantities) state.quantities = {...state.quantities, ...state.history.quantities};
+  showHist=false; saveToFirestore(); render();
+}
+function clearAll() {
+  state.needed = new Set(); state.bought = new Set();
+  saveToFirestore(); render();
+}
+
+// ─── Derived ─────────────────────────────────────────────────
+function categories() {
+  return BASE_CATS.map(cat => ({
+    ...cat, items: [...cat.items, ...(state.custom[cat.id]||[]).map(n=>[n,""])]
+  }));
+}
+function allItems() {
+  return categories().flatMap(c=>c.items.map(([n,e])=>({name:n,emoji:e,cat:c.id})));
+}
+
+// ─── Render ───────────────────────────────────────────────────
+function h(tag, attrs={}, ...children) {
+  const el = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k==="class") el.className=v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(), v);
+    else el.setAttribute(k, v);
+  }
+  for (const c of children.flat()) {
+    if (c==null||c===false) continue;
+    el.appendChild(typeof c==="string"?document.createTextNode(c):c);
+  }
+  return el;
+}
+
+function render() {
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+
+  const cats       = categories();
+  const neededCount = state.needed.size;
+  const boughtCount = [...state.needed].filter(n=>state.bought.has(n)).length;
+  const progress    = neededCount>0?(boughtCount/neededCount)*100:0;
+  const favCount    = [...state.favorites].filter(n=>!state.needed.has(n)).length;
+  const filtCats    = search.trim()
+    ? [{id:"search",emoji:"🔍",label:"תוצאות",items:allItems().filter(i=>i.name.includes(search.trim())).map(i=>[i.name,i.emoji])}]
+    : cats;
+  const shopCats = cats.map(c=>({...c,items:c.items.filter(([n])=>state.needed.has(n))})).filter(c=>c.items.length>0);
+
+  // ── Header ──
+  const hdrActions = h("div",{class:"hdr-actions"},
+    ...(state.favorites.size>0 && mode==="plan" ? [
+      h("button",{class:`icon-btn ${favCount>0?"hl":""}`, onClick:addFavsToNeeded},
+        favCount>0?`⭐ +${favCount}`:"⭐ ✓")
+    ] : []),
+    ...(state.history && mode==="plan" ? [
+      h("button",{class:"icon-btn",onClick:()=>{showHist=true;render();}},"🕐")
+    ] : []),
+    h("span",{},h("span",{class:`sync-dot ${connected?"":"off"}`})),
+    ...(mode==="plan"&&neededCount>0?[h("span",{class:"badge"},String(neededCount))]:[]),
+    ...(mode==="shop"&&neededCount>0?[h("span",{class:"badge"},`${boughtCount}/${neededCount}`)]:[]),
+  );
+
+  const searchWrap = mode==="plan" ? h("div",{class:"search-wrap"},
+    h("div",{class:"search-rel"},
+      h("span",{class:"search-ico"},"🔍"),
+      Object.assign(h("input",{class:"search-inp",placeholder:"חיפוש פריט...",value:search}),{
+        oninput(e){search=e.target.value;addingIn=null;addDraft="";render();}
+      })
+    )
+  ) : null;
+
+  const hdr = h("div",{class:"hdr"},
+    h("div",{class:"hdr-top"},
+      h("div",{class:"title"},"🛒 הסל שלנו"),
+      hdrActions,
+    ),
+    h("div",{class:"tabs"},
+      h("button",{class:`tab ${mode==="plan"?"active":""}`,onClick:()=>{mode="plan";search="";addingIn=null;addDraft="";render();}},"📝 תכנון"),
+      h("button",{class:`tab ${mode==="shop"?"active":""}`,onClick:()=>{mode="shop";render();}},"🏪 קנייה בסופר"),
+    ),
+    ...(searchWrap?[searchWrap]:[])
+  );
+  app.appendChild(hdr);
+
+  // ── PLAN ──
+  if (mode==="plan") {
+    const scroll = h("div",{class:"scroll"});
+    if (neededCount===0&&!search) scroll.appendChild(h("p",{class:"hint"},"לחץ על פריטים להוספה לרשימה ↓"));
+
+    filtCats.forEach(cat => {
+      const allSel = cat.items.length>0 && cat.items.every(([n])=>state.needed.has(n));
+      const someSel = cat.items.some(([n])=>state.needed.has(n));
+      const catHd = h("div",{class:"cat-hd",onClick:()=>toggleCat(cat.id)},
+        h("div",{class:"cat-hd-left"},h("span",{},cat.emoji)," ",cat.label),
+        h("span",{class:"cat-sel-hint"},allSel?"✓ כל הפריטים":someSel?"לחץ לבחירת הכל":"לחץ לבחירת הכל")
+      );
+      const chips = h("div",{class:"chips"});
+
+      cat.items.forEach(([name,emoji]) => {
+        const sel = state.needed.has(name);
+        const isFav = state.favorites.has(name);
+        const isCustom = (state.custom[cat.id]||[]).includes(name);
+        const qty = state.quantities[name]||1;
+        const wrap = h("div",{class:"chip-wrap"});
+        const chip = h("button",{
+          class:`chip ${sel?"on":""} ${isFav&&!sel?"fav":""}`,
+          onClick:()=>toggleNeeded(name)
+        },
+          isFav&&!sel?"⭐ ":"",
+          sel?"✓ ":"",
+          name,
+          emoji?" "+emoji:"",
+          sel&&qty>1?h("span",{style:"font-size:11px;font-weight:800;opacity:.75;margin-right:2px"},` ×${qty}`):"",
+        );
+        wrap.appendChild(chip);
+        if (sel) {
+          const menuBtn = h("button",{class:"chip-menu-btn",onClick:(e)=>{e.stopPropagation();menu={name,catId:cat.id,isCustom};render();}},"⋮");
+          wrap.appendChild(menuBtn);
+        }
+        chips.appendChild(wrap);
+      });
+
+      // Add button
+      if (cat.id!=="search") {
+        if (addingIn===cat.id) {
+          const inp = h("input",{class:"add-inp",placeholder:"שם המוצר...",value:addDraft});
+          inp.oninput = e=>{addDraft=e.target.value;};
+          inp.onkeydown = e=>{if(e.key==="Enter")confirmAdd(cat.id);if(e.key==="Escape"){addingIn=null;addDraft="";render();}};
+          const inline = h("div",{class:"add-inline"},
+            inp,
+            h("button",{class:"add-ok",onClick:()=>confirmAdd(cat.id)},"✓"),
+            h("button",{class:"add-x",onClick:()=>{addingIn=null;addDraft="";render();}},"✕"),
+          );
+          chips.appendChild(inline);
+          setTimeout(()=>inp.focus(),50);
+        } else {
+          chips.appendChild(h("button",{class:"chip-add",onClick:()=>{addingIn=cat.id;addDraft="";render();}},"+ הוסף"));
+        }
+      }
+
+      scroll.appendChild(catHd);
+      scroll.appendChild(chips);
+    });
+    app.appendChild(scroll);
+
+    const bot = h("div",{class:"bot"},
+      ...(neededCount>0 ? [
+        h("button",{class:"btn-p",onClick:()=>{mode="shop";render();}},`🏪 עבור לקנייה (${neededCount})`),
+        h("button",{class:"btn-d",onClick:clearAll},"🗑"),
+      ] : [h("div",{style:"flex:1;text-align:center;font-size:13px;color:#aaa;padding:12px 0;"},"הרשימה ריקה — בחר פריטים למעלה")])
+    );
+    app.appendChild(bot);
+  }
+
+  // ── SHOP ──
+  if (mode==="shop") {
+    if (neededCount>0) {
+      const prog = h("div",{class:"prog-wrap"},
+        h("div",{class:"prog-track"},h("div",{class:"prog-fill",style:`width:${progress}%`})),
+        h("div",{class:"prog-text"},h("span",{},`נותרו: ${neededCount-boughtCount} פריטים`),h("span",{},`${Math.round(progress)}% ✓`))
+      );
+      app.appendChild(prog);
+    }
+    const scroll = h("div",{class:"scroll"});
+    if (neededCount===0) {
+      scroll.appendChild(h("div",{class:"empty"},h("div",{class:"empty-ico"},"🛒"),h("div",{style:"font-weight:700;font-size:17px"},"הרשימה ריקה"),h("div",{style:"font-size:14px;margin-top:6px"},"עבור לתכנון כדי להוסיף פריטים")));
+    } else {
+      shopCats.forEach(cat => {
+        scroll.appendChild(h("div",{class:"shop-cat"},cat.emoji," ",cat.label));
+        cat.items.forEach(([name,emoji]) => {
+          const done = state.bought.has(name);
+          const qty  = state.quantities[name]||1;
+          const item = h("div",{class:`shop-item ${done?"done":""}`},
+            h("div",{class:"shop-left",onClick:()=>toggleBought(name)},
+              h("div",{class:`chk ${done?"on":""}`},done?h("span",{class:"chk-ico"},"✓"):""),
+              h("span",{class:`iname ${done?"done":""}`},name,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
+            ),
+            h("div",{class:"qty-ctrl"},
+              h("button",{class:"qty-btn",onClick:()=>adjustQty(name,-1)},"−"),
+              h("span",{class:"qty-num"},String(qty)),
+              h("button",{class:"qty-btn",onClick:()=>adjustQty(name,+1)},"+"),
+            )
+          );
+          scroll.appendChild(item);
+        });
+      });
+    }
+    app.appendChild(scroll);
+    const bot = h("div",{class:"bot"},
+      ...(boughtCount>0?[h("button",{class:"btn-p",onClick:finishShopping},`✅ סיים קנייה (${boughtCount})`)]:[]),
+      h("button",{class:"btn-s",onClick:()=>{mode="plan";render();}},"← תכנון"),
+      ...(neededCount>0&&boughtCount===0?[h("div",{style:"flex:1;font-size:13px;color:#aaa;padding:12px 0;text-align:center"},"סמן פריטים שקנית ↑")]:[])
+    );
+    app.appendChild(bot);
+  }
+
+  // ── Item menu overlay ──
+  if (menu) {
+    const qty = state.quantities[menu.name]||1;
+    const isFav = state.favorites.has(menu.name);
+    const overlay = h("div",{class:"overlay",onClick:()=>{menu=null;render();}},
+      h("div",{class:"sheet",onClick:e=>e.stopPropagation()},
+        h("div",{class:"sheet-drag"}),
+        h("div",{class:"sheet-title"},menu.name),
+        h("button",{class:"sheet-row",onClick:()=>{toggleFav(menu.name);menu=null;render();}},
+          h("span",{},isFav?"☆ הסר ממועדפים":"⭐ הוסף למועדפים")
+        ),
+        h("div",{class:"sheet-row",style:"cursor:default"},
+          h("span",{},"כמות לקנייה"),
+          h("div",{class:"qty-stepper"},
+            h("button",{class:"sq-btn",onClick:()=>{adjustQty(menu.name,-1);render();}},"−"),
+            h("span",{class:"sq-num"},String(qty)),
+            h("button",{class:"sq-btn",onClick:()=>{adjustQty(menu.name,+1);render();}},"＋"),
+          )
+        ),
+        ...(menu.isCustom?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]:[]),
+        h("button",{class:"sheet-row close",onClick:()=>{menu=null;render();}},"✕ סגור"),
+      )
+    );
+    app.appendChild(overlay);
+  }
+
+  // ── History overlay ──
+  if (showHist && state.history) {
+    const overlay = h("div",{class:"overlay",onClick:()=>{showHist=false;render();}},
+      h("div",{class:"sheet",onClick:e=>e.stopPropagation()},
+        h("div",{class:"sheet-drag"}),
+        h("div",{class:"sheet-title"},"🕐 קנינו בפעם האחרונה"),
+        h("div",{style:"max-height:280px;overflow-y:auto;padding:6px 0"},
+          ...state.history.needed.map(name =>
+            h("div",{class:"hist-item"},
+              h("span",{},name),
+              ...(state.history.quantities?.[name]>1?[h("span",{style:"color:var(--mt);font-size:12px"},`×${state.history.quantities[name]}`)]:[])
+            )
+          )
+        ),
+        h("div",{class:"hist-actions"},
+          h("button",{class:"btn-p",style:"flex:1;padding:11px",onClick:restoreHistory},`← טען מחדש (${state.history.needed.length} פריטים)`),
+          h("button",{class:"btn-s",onClick:()=>{showHist=false;render();}},"סגור"),
+        )
+      )
+    );
+    app.appendChild(overlay);
+  }
+}
+
+// ─── Boot ─────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
