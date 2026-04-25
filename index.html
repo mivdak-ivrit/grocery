@@ -28,10 +28,18 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .search-rel{position:relative;}
 .search-inp{width:100%;padding:9px 14px 9px 34px;border:none;border-radius:10px;font-family:Heebo;font-size:15px;direction:rtl;background:rgba(255,255,255,.95);outline:none;color:var(--tx);}
 .search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
-.cat-hd{padding:10px 16px 5px;font-size:11px;font-weight:800;color:var(--mt);letter-spacing:1px;text-transform:uppercase;background:var(--bg);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
-.cat-hd:hover{background:#ede8e2;}
-.cat-hd-left{display:flex;align-items:center;gap:6px;}
-.cat-sel-hint{font-size:10px;font-weight:600;color:var(--gm);opacity:.8;}
+
+/* Category header */
+.cat-hd{padding:10px 16px 5px;font-size:11px;font-weight:800;color:var(--mt);letter-spacing:1px;text-transform:uppercase;background:var(--bg);display:flex;align-items:center;justify-content:space-between;user-select:none;min-height:36px;}
+.cat-hd-left{display:flex;align-items:center;gap:6px;flex:1;}
+.cat-rename-btn{background:none;border:none;font-size:13px;color:var(--mt);cursor:pointer;padding:2px 6px;border-radius:6px;opacity:.6;transition:opacity .15s;flex-shrink:0;}
+.cat-rename-btn:hover{opacity:1;background:#ede8e2;}
+.cat-rename-wrap{display:flex;align-items:center;gap:6px;flex:1;padding:2px 0;}
+.cat-rename-inp{padding:4px 8px;border:1.5px solid var(--gm);border-radius:8px;font-family:Heebo;font-size:13px;font-weight:700;direction:rtl;outline:none;background:white;color:var(--tx);width:160px;}
+.cat-rename-ok{padding:4px 10px;border:none;background:var(--g);color:white;border-radius:7px;font-family:Heebo;font-size:12px;cursor:pointer;}
+.cat-rename-x{padding:4px 8px;border:none;background:#eee;color:#888;border-radius:7px;font-family:Heebo;font-size:12px;cursor:pointer;}
+
+/* Chips */
 .chips{display:flex;flex-wrap:wrap;gap:7px;padding:5px 14px 12px;align-items:center;}
 .chip-wrap{display:inline-flex;align-items:center;}
 .chip{padding:7px 12px;border-radius:22px;border:1.5px solid var(--bd);background:white;color:#555;font-family:Heebo;font-size:13.5px;cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;}
@@ -46,10 +54,27 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .add-inp{padding:6px 10px;border-radius:10px;border:1.5px solid var(--gm);font-family:Heebo;font-size:14px;direction:rtl;outline:none;width:130px;background:white;color:var(--tx);}
 .add-ok{padding:6px 11px;border-radius:10px;border:none;background:var(--g);color:white;font-family:Heebo;font-size:13px;font-weight:700;cursor:pointer;}
 .add-x{padding:6px 9px;border-radius:10px;border:none;background:#eee;color:#888;font-family:Heebo;font-size:13px;cursor:pointer;}
+
+/* Add new category */
+.add-cat-wrap{padding:12px 14px 4px;}
+.add-cat-btn{width:100%;padding:11px;border:1.5px dashed var(--bd);border-radius:12px;background:transparent;color:var(--mt);font-family:Heebo;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.add-cat-btn:hover{border-color:var(--gm);color:var(--gm);background:var(--gl);}
+.add-cat-form{background:white;border-radius:14px;border:1.5px solid var(--bd);padding:14px;display:flex;flex-direction:column;gap:10px;}
+.add-cat-row{display:flex;align-items:center;gap:8px;}
+.add-cat-emoji-inp{padding:7px 10px;border:1.5px solid var(--bd);border-radius:10px;font-size:18px;width:52px;text-align:center;outline:none;direction:ltr;}
+.add-cat-name-inp{flex:1;padding:7px 12px;border:1.5px solid var(--bd);border-radius:10px;font-family:Heebo;font-size:14px;direction:rtl;outline:none;color:var(--tx);}
+.add-cat-name-inp:focus,.add-cat-emoji-inp:focus{border-color:var(--gm);}
+.add-cat-actions{display:flex;gap:8px;}
+.add-cat-submit{flex:1;padding:9px;border:none;background:var(--g);color:white;border-radius:10px;font-family:Heebo;font-size:14px;font-weight:700;cursor:pointer;}
+.add-cat-cancel{padding:9px 14px;border:none;background:#eee;color:#888;border-radius:10px;font-family:Heebo;font-size:14px;cursor:pointer;}
+
+/* Progress */
 .prog-wrap{background:white;padding:12px 16px 10px;border-bottom:1px solid var(--bd);}
 .prog-track{height:8px;background:#e8e0d5;border-radius:6px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--g);border-radius:6px;transition:width .4s ease;}
 .prog-text{display:flex;justify-content:space-between;margin-top:6px;font-size:12.5px;color:var(--mt);font-weight:500;}
+
+/* Shop */
 .shop-cat{font-size:12px;font-weight:800;letter-spacing:.8px;color:var(--mt);text-transform:uppercase;padding:10px 16px 4px;background:var(--bg);display:flex;align-items:center;gap:5px;}
 .shop-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border-bottom:1px solid #f0e8df;user-select:none;}
 .shop-item.done{opacity:.4;}
@@ -59,16 +84,21 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .chk-ico{color:white;font-size:12px;font-weight:900;}
 .iname{font-size:15px;font-weight:500;color:var(--tx);}
 .iname.done{text-decoration:line-through;color:#bbb;}
+.item-thumb{width:36px;height:36px;border-radius:8px;object-fit:cover;cursor:pointer;flex-shrink:0;border:1.5px solid var(--bd);}
 .qty-ctrl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
 .qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bd);background:white;color:var(--tx);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
 .qty-btn:hover{border-color:var(--g);color:var(--g);}
 .qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center;}
+
+/* Buttons */
 .bot{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;border-top:1.5px solid var(--bd);padding:10px 14px;display:flex;gap:9px;z-index:200;}
 .btn-p{flex:1;padding:12px;background:var(--g);color:white;border:none;border-radius:12px;font-family:Heebo;font-size:15px;font-weight:700;cursor:pointer;}
 .btn-s{padding:12px 14px;background:var(--bg);color:var(--mt);border:1.5px solid var(--bd);border-radius:12px;font-family:Heebo;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;}
 .btn-d{padding:12px 14px;background:#fff0ee;color:var(--rd);border:1.5px solid #f5ccc8;border-radius:12px;font-family:Heebo;font-size:14px;cursor:pointer;}
+
+/* Sheet */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:flex-end;justify-content:center;}
-.sheet{background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:12px 0 30px;max-height:80vh;overflow-y:auto;}
+.sheet{background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:12px 0 30px;max-height:85vh;overflow-y:auto;}
 .sheet-drag{width:40px;height:4px;background:#ddd;border-radius:4px;margin:0 auto 12px;}
 .sheet-title{font-size:17px;font-weight:800;color:var(--tx);padding:4px 20px 14px;border-bottom:1px solid var(--bd);margin-bottom:4px;}
 .sheet-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-family:Heebo;font-size:15px;color:var(--tx);border:none;background:transparent;width:100%;text-align:right;}
@@ -79,6 +109,15 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .sq-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:white;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .sq-btn:hover{border-color:var(--g);color:var(--g);}
 .sq-num{font-size:18px;font-weight:800;min-width:28px;text-align:center;}
+.img-preview-wrap{padding:10px 20px;display:flex;align-items:center;gap:12px;}
+.img-preview{width:80px;height:80px;border-radius:12px;object-fit:cover;border:2px solid var(--bd);}
+.img-actions{display:flex;flex-direction:column;gap:8px;}
+.img-upload-btn{padding:8px 16px;border-radius:10px;border:1.5px solid var(--g);background:var(--gl);color:var(--g);font-family:Heebo;font-size:14px;font-weight:600;cursor:pointer;text-align:center;}
+.img-remove-btn{padding:6px 14px;border-radius:10px;border:1.5px solid #f5ccc8;background:#fff0ee;color:var(--rd);font-family:Heebo;font-size:13px;cursor:pointer;}
+.img-uploading{color:var(--mt);font-size:13px;padding:4px 0;}
+.img-full-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:600;display:flex;align-items:center;justify-content:center;}
+.img-full{max-width:95vw;max-height:85vh;border-radius:14px;object-fit:contain;}
+.img-full-close{position:absolute;top:18px;left:18px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .hist-item{padding:6px 20px;font-size:14px;color:#555;display:flex;align-items:center;gap:8px;}
 .hist-actions{padding:12px 16px 0;display:flex;gap:9px;}
 .scroll{padding-bottom:90px;}
@@ -90,18 +129,20 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .hint{text-align:center;padding:14px 0 2px;font-size:13px;color:var(--mt);}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:4px;}
 .sync-dot.off{background:#f87171;}
+.chip-img-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gm);margin-right:4px;vertical-align:middle;}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="loading"><div class="loading-spinner"></div><span>מתחבר...</span></div>
 </div>
+<input type="file" id="img-file-input" accept="image/*" capture="environment" style="display:none"/>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-// ─── Firebase Config ──────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyDuMMpmyaoRNPlsICSDetMBCTOPhfqrA9w",
   authDomain: "grocery-e18a6.firebaseapp.com",
@@ -110,11 +151,12 @@ const firebaseConfig = {
   messagingSenderId: "743023364500",
   appId: "1:743023364500:web:8b10af56fb318c0f342781"
 };
-const fbApp = initializeApp(firebaseConfig);
-const db    = getFirestore(fbApp);
-const docRef = doc(db, "grocery", "shared");
+const fbApp   = initializeApp(firebaseConfig);
+const db      = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+const docRef  = doc(db, "grocery", "shared");
 
-// ─── Categories ───────────────────────────────────────────────
+// ─── Base categories ──────────────────────────────────────────
 const BASE_CATS = [
   {id:"veggies",  emoji:"🥬", label:"ירקות",      items:[["מלפפונים","🥒"],["עגבניות","🍅"],["חסה","🥬"],["כרובית",""],["פטריות","🍄"],["נבטים","🌱"],["בצל ירוק",""],["חצילים","🍆"],["בצל",""],["כרוב",""],["פלפלים",""],["גזר","🥕"],["כוסברה",""],["פטרוזיליה",""],["בטטות","🍠"],["קישואים",""],["שום",""],["עגבניות שרי",""],["כרישה",""],["סלרי",""],["קולרבי",""],["דלעת","🎃"]]},
   {id:"fruits",   emoji:"🍎", label:"פירות",      items:[["אבוקדו","🥑"],["לימונים","🍋"],["בננות","🍌"],["תמרים","🌴"],["תפוחים","🍎"],["קלמנטינות",""],["אבטיח",""],["אפרסקים",""],["תותים","🍓"],["אגסים","🍐"],["אוכמניות",""],["פירות",""]]},
@@ -134,329 +176,439 @@ const BASE_CATS = [
 // ─── State ────────────────────────────────────────────────────
 let state = {
   needed: new Set(), bought: new Set(),
-  custom: {}, quantities: {}, favorites: new Set(), history: null,
+  custom: {},           // { catId: ["item",...] } — extra items in any category
+  customCats: [],       // [{ id, emoji, label }] — new user-created categories
+  catNames: {},         // { catId: "renamed label" }
+  itemNames: {},        // { origName: "display name" }
+  quantities: {}, favorites: new Set(),
+  history: null, images: {},
 };
-let mode = "plan", search = "", addingIn = null, addDraft = "";
-let menu = null, showHist = false;
-let connected = false;
-let ignoreNext = false; // prevent echo from own saves
+let mode="plan", search="", addingIn=null, addDraft="";
+let menu=null, showHist=false, fullImg=null;
+let renamingCat=null, renameDraft="";     // catId being renamed
+let addingCat=false, addCatEmoji="", addCatName="";
+let connected=false, ignoreNext=false;
+let uploadingFor=null;
+
+// ─── Image ────────────────────────────────────────────────────
+function compressImage(file) {
+  return new Promise(resolve => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX=600; let w=img.width, h=img.height;
+      if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
+      const c=document.createElement("canvas"); c.width=w; c.height=h;
+      c.getContext("2d").drawImage(img,0,0,w,h);
+      c.toBlob(resolve,"image/jpeg",0.75); URL.revokeObjectURL(url);
+    }; img.src=url;
+  });
+}
+async function uploadImage(name, file) {
+  const blob = await compressImage(file);
+  const r = ref(storage, `items/${encodeURIComponent(name)}.jpg`);
+  await uploadBytes(r, blob, {contentType:"image/jpeg"});
+  return getDownloadURL(r);
+}
+async function removeImage(name) {
+  try { await deleteObject(ref(storage,`items/${encodeURIComponent(name)}.jpg`)); } catch {}
+  delete state.images[name]; await saveToFirestore(); render();
+}
+function triggerImageUpload(name) {
+  uploadingFor=name;
+  const inp=document.getElementById("img-file-input"); inp.value="";
+  inp.onchange=async()=>{
+    const file=inp.files[0]; if(!file) return;
+    uploadingFor=name; render();
+    try { const url=await uploadImage(name,file); state.images[name]=url; await saveToFirestore(); }
+    catch(e){ console.error(e); alert("העלאה נכשלה, נסה שוב"); }
+    uploadingFor=null; render();
+  };
+  inp.click();
+}
 
 // ─── Firestore ────────────────────────────────────────────────
 async function saveToFirestore() {
-  ignoreNext = true;
+  ignoreNext=true;
   try {
     await setDoc(docRef, {
-      needed: [...state.needed],
-      bought: [...state.bought],
-      custom: state.custom,
-      quantities: state.quantities,
-      favorites: [...state.favorites],
-      history: state.history || null,
+      needed:[...state.needed], bought:[...state.bought],
+      custom:state.custom, customCats:state.customCats, catNames:state.catNames,
+      itemNames:state.itemNames,
+      quantities:state.quantities, favorites:[...state.favorites],
+      history:state.history||null, images:state.images,
     });
-  } catch(e) { console.warn("save failed", e); }
+  } catch(e){ console.warn("save failed",e); }
 }
 
 function mergeRemote(data) {
-  if (!data) return;
-  const rn = new Set(data.needed || []);
-  const rb = new Set(data.bought || []);
-  // merge needed (union), bought (intersect with merged needed)
-  state.needed = new Set([...state.needed, ...rn]);
-  state.bought = new Set([...[...state.bought].filter(x=>state.needed.has(x)), ...[...rb].filter(x=>state.needed.has(x))]);
-  // merge custom
-  const rc = data.custom || {};
-  for (const [k,v] of Object.entries(rc)) {
-    const s = new Set(state.custom[k]||[]);
-    v.forEach(i=>s.add(i));
-    state.custom[k] = [...s];
-  }
-  // merge quantities & favorites
-  state.quantities = { ...data.quantities, ...state.quantities };
-  state.favorites = new Set([...state.favorites, ...(data.favorites||[])]);
-  if (!state.history && data.history) state.history = data.history;
+  if(!data) return;
+  const rn=new Set(data.needed||[]), rb=new Set(data.bought||[]);
+  state.needed=new Set([...state.needed,...rn]);
+  state.bought=new Set([...[...state.bought].filter(x=>state.needed.has(x)),...[...rb].filter(x=>state.needed.has(x))]);
+  const rc=data.custom||{};
+  for(const[k,v] of Object.entries(rc)){const s=new Set(state.custom[k]||[]);v.forEach(i=>s.add(i));state.custom[k]=[...s];}
+  // merge custom cats (union by id)
+  const existIds=new Set(state.customCats.map(c=>c.id));
+  for(const cat of (data.customCats||[])) if(!existIds.has(cat.id)) state.customCats.push(cat);
+  // merge catNames
+  state.catNames={...(data.catNames||{}),...state.catNames};
+  state.itemNames={...(data.itemNames||{}),...state.itemNames};
+  state.quantities={...(data.quantities||{}),...state.quantities};
+  state.favorites=new Set([...state.favorites,...(data.favorites||[])]);
+  if(!state.history&&data.history) state.history=data.history;
+  state.images={...(data.images||{}),...state.images};
 }
 
-// ─── Init & real-time listener ────────────────────────────────
 async function init() {
-  try {
-    const snap = await getDoc(docRef);
-    if (snap.exists()) mergeRemote(snap.data());
-    connected = true;
-  } catch(e) { console.warn("init failed", e); }
-
-  // Real-time updates
-  onSnapshot(docRef, snap => {
-    if (ignoreNext) { ignoreNext = false; return; }
-    if (snap.exists()) { mergeRemote(snap.data()); render(); }
-    connected = true;
-  }, err => { connected = false; render(); });
-
+  try { const snap=await getDoc(docRef); if(snap.exists()) mergeRemote(snap.data()); connected=true; }
+  catch(e){ console.warn("init failed",e); }
+  onSnapshot(docRef, snap=>{
+    if(ignoreNext){ignoreNext=false;return;}
+    if(snap.exists()){mergeRemote(snap.data());render();}
+    connected=true;
+  }, ()=>{connected=false;render();});
   render();
 }
 
 // ─── Mutations ────────────────────────────────────────────────
-function toggleNeeded(name) {
-  if (state.needed.has(name)) { state.needed.delete(name); state.bought.delete(name); }
+function toggleNeeded(name){
+  if(state.needed.has(name)){state.needed.delete(name);state.bought.delete(name);}
   else state.needed.add(name);
   saveToFirestore(); render();
 }
-function toggleBought(name) {
-  state.bought.has(name) ? state.bought.delete(name) : state.bought.add(name);
+function toggleBought(name){
+  state.bought.has(name)?state.bought.delete(name):state.bought.add(name);
   saveToFirestore(); render();
 }
-function toggleCat(catId) {
-  const cat = categories().find(c=>c.id===catId);
-  if (!cat) return;
-  const allSel = cat.items.every(([n])=>state.needed.has(n));
-  cat.items.forEach(([n]) => allSel ? state.needed.delete(n) : state.needed.add(n));
+function toggleFav(name){
+  state.favorites.has(name)?state.favorites.delete(name):state.favorites.add(name);
   saveToFirestore(); render();
 }
-function toggleFav(name) {
-  state.favorites.has(name) ? state.favorites.delete(name) : state.favorites.add(name);
+function adjustQty(name,delta){
+  const cur=(state.quantities[name]||1)+delta;
+  if(cur<=1) delete state.quantities[name]; else state.quantities[name]=Math.min(cur,99);
   saveToFirestore(); render();
 }
-function adjustQty(name, delta) {
-  const cur = (state.quantities[name]||1) + delta;
-  if (cur <= 1) delete state.quantities[name]; else state.quantities[name] = Math.min(cur, 99);
+function addFavsToNeeded(){
+  state.favorites.forEach(n=>state.needed.add(n));
   saveToFirestore(); render();
 }
-function addFavsToNeeded() {
-  state.favorites.forEach(n => state.needed.add(n));
-  saveToFirestore(); render();
-}
-async function confirmAdd(catId) {
-  const name = addDraft.trim(); if (!name) { addingIn=null; addDraft=""; render(); return; }
-  const cat = categories().find(c=>c.id===catId);
-  if (!cat?.items.some(([n])=>n===name)) {
-    if (!state.custom[catId]) state.custom[catId] = [];
-    state.custom[catId].push(name);
-    state.needed.add(name);
+async function confirmAdd(catId){
+  const name=addDraft.trim(); if(!name){addingIn=null;addDraft="";render();return;}
+  const cat=categories().find(c=>c.id===catId);
+  if(!cat?.items.some(([n])=>n===name)){
+    if(!state.custom[catId]) state.custom[catId]=[];
+    state.custom[catId].push(name); state.needed.add(name);
   }
   addingIn=null; addDraft=""; saveToFirestore(); render();
 }
-function deleteCustom(name, catId) {
-  state.custom[catId] = (state.custom[catId]||[]).filter(n=>n!==name);
+function deleteCustom(name,catId){
+  state.custom[catId]=(state.custom[catId]||[]).filter(n=>n!==name);
   state.needed.delete(name); state.bought.delete(name);
+  if(state.images[name]){removeImage(name);return;}
   menu=null; saveToFirestore(); render();
 }
-function finishShopping() {
-  const justBought = [...state.needed].filter(n=>state.bought.has(n));
-  if (justBought.length > 0) state.history = { needed: justBought, quantities: {...state.quantities} };
-  state.needed = new Set([...state.needed].filter(n=>!state.bought.has(n)));
-  state.bought = new Set();
+function finishShopping(){
+  const jb=[...state.needed].filter(n=>state.bought.has(n));
+  if(jb.length>0) state.history={needed:jb,quantities:{...state.quantities}};
+  state.needed=new Set([...state.needed].filter(n=>!state.bought.has(n)));
+  state.bought=new Set();
   saveToFirestore(); render();
 }
-function restoreHistory() {
-  if (!state.history) return;
+function restoreHistory(){
+  if(!state.history) return;
   state.history.needed.forEach(n=>state.needed.add(n));
-  if (state.history.quantities) state.quantities = {...state.quantities, ...state.history.quantities};
+  if(state.history.quantities) state.quantities={...state.quantities,...state.history.quantities};
   showHist=false; saveToFirestore(); render();
 }
-function clearAll() {
-  state.needed = new Set(); state.bought = new Set();
+function clearAll(){
+  state.needed=new Set(); state.bought=new Set();
   saveToFirestore(); render();
+}
+
+// ─── Item rename ──────────────────────────────────────────────
+function confirmItemRename() {
+  const newName = renameDraft.trim();
+  if(newName && newName !== menu.name) {
+    state.itemNames[menu.name] = newName;
+  }
+  renamingCat=null; renameDraft=""; saveToFirestore(); render();
+}
+
+// ─── Category rename ──────────────────────────────────────────
+function startRename(catId, currentLabel) {
+  renamingCat=catId; renameDraft=currentLabel; render();
+}
+function confirmRename() {
+  if(renameDraft.trim()) state.catNames[renamingCat]=renameDraft.trim();
+  renamingCat=null; renameDraft=""; saveToFirestore(); render();
+}
+function cancelRename() { renamingCat=null; renameDraft=""; render(); }
+
+// ─── Add new category ─────────────────────────────────────────
+function confirmAddCat() {
+  const label=addCatName.trim(); if(!label) return;
+  const emoji=addCatEmoji.trim()||"📦";
+  const id="cat_"+Date.now();
+  state.customCats.push({id, emoji, label});
+  addingCat=false; addCatName=""; addCatEmoji="";
+  saveToFirestore(); render();
+}
+function deleteCustomCat(catId) {
+  state.customCats=state.customCats.filter(c=>c.id!==catId);
+  delete state.custom[catId]; delete state.catNames[catId];
+  menu=null; saveToFirestore(); render();
 }
 
 // ─── Derived ─────────────────────────────────────────────────
 function categories() {
-  return BASE_CATS.map(cat => ({
-    ...cat, items: [...cat.items, ...(state.custom[cat.id]||[]).map(n=>[n,""])]
+  const baseCats = BASE_CATS.map(cat=>({
+    ...cat,
+    label: state.catNames[cat.id]||cat.label,
+    items:[...cat.items,...(state.custom[cat.id]||[]).map(n=>[n,""])],
+    isCustomCat: false,
   }));
+  const userCats = state.customCats.map(cat=>({
+    ...cat,
+    label: state.catNames[cat.id]||cat.label,
+    items:(state.custom[cat.id]||[]).map(n=>[n,""]),
+    isCustomCat: true,
+  }));
+  return [...baseCats, ...userCats];
 }
-function allItems() {
-  return categories().flatMap(c=>c.items.map(([n,e])=>({name:n,emoji:e,cat:c.id})));
-}
+function allItems(){return categories().flatMap(c=>c.items.map(([n,e])=>({name:n,emoji:e,cat:c.id})));}
 
 // ─── Render ───────────────────────────────────────────────────
 function h(tag, attrs={}, ...children) {
-  const el = document.createElement(tag);
-  for (const [k,v] of Object.entries(attrs)) {
-    if (k==="class") el.className=v;
-    else if (k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(), v);
-    else el.setAttribute(k, v);
+  const el=document.createElement(tag);
+  for(const[k,v] of Object.entries(attrs)){
+    if(k==="class") el.className=v;
+    else if(k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(),v);
+    else el.setAttribute(k,v);
   }
-  for (const c of children.flat()) {
-    if (c==null||c===false) continue;
+  for(const c of children.flat()){
+    if(c==null||c===false) continue;
     el.appendChild(typeof c==="string"?document.createTextNode(c):c);
   }
   return el;
 }
 
 function render() {
-  const app = document.getElementById("app");
-  app.innerHTML = "";
-
-  const cats       = categories();
-  const neededCount = state.needed.size;
-  const boughtCount = [...state.needed].filter(n=>state.bought.has(n)).length;
-  const progress    = neededCount>0?(boughtCount/neededCount)*100:0;
-  const favCount    = [...state.favorites].filter(n=>!state.needed.has(n)).length;
-  const filtCats    = search.trim()
-    ? [{id:"search",emoji:"🔍",label:"תוצאות",items:allItems().filter(i=>i.name.includes(search.trim())).map(i=>[i.name,i.emoji])}]
-    : cats;
-  const shopCats = cats.map(c=>({...c,items:c.items.filter(([n])=>state.needed.has(n))})).filter(c=>c.items.length>0);
+  const app=document.getElementById("app"); app.innerHTML="";
+  const cats=categories();
+  const neededCount=state.needed.size;
+  const boughtCount=[...state.needed].filter(n=>state.bought.has(n)).length;
+  const progress=neededCount>0?(boughtCount/neededCount)*100:0;
+  const favCount=[...state.favorites].filter(n=>!state.needed.has(n)).length;
+  const filtCats=search.trim()
+    ?[{id:"search",emoji:"🔍",label:"תוצאות",items:allItems().filter(i=>i.name.includes(search.trim())).map(i=>[i.name,i.emoji]),isCustomCat:false}]
+    :cats;
+  const shopCats=cats.map(c=>({...c,items:c.items.filter(([n])=>state.needed.has(n))})).filter(c=>c.items.length>0);
 
   // ── Header ──
-  const hdrActions = h("div",{class:"hdr-actions"},
-    ...(state.favorites.size>0 && mode==="plan" ? [
-      h("button",{class:`icon-btn ${favCount>0?"hl":""}`, onClick:addFavsToNeeded},
-        favCount>0?`⭐ +${favCount}`:"⭐ ✓")
-    ] : []),
-    ...(state.history && mode==="plan" ? [
-      h("button",{class:"icon-btn",onClick:()=>{showHist=true;render();}},"🕐")
-    ] : []),
+  const hdrActions=h("div",{class:"hdr-actions"},
+    ...(state.favorites.size>0&&mode==="plan"?[h("button",{class:`icon-btn ${favCount>0?"hl":""}`,onClick:addFavsToNeeded},favCount>0?`⭐ +${favCount}`:"⭐ ✓")]:[ ]),
+    ...(state.history&&mode==="plan"?[h("button",{class:"icon-btn",onClick:()=>{showHist=true;render();}},"🕐")]:[ ]),
     h("span",{},h("span",{class:`sync-dot ${connected?"":"off"}`})),
-    ...(mode==="plan"&&neededCount>0?[h("span",{class:"badge"},String(neededCount))]:[]),
-    ...(mode==="shop"&&neededCount>0?[h("span",{class:"badge"},`${boughtCount}/${neededCount}`)]:[]),
+    ...(mode==="plan"&&neededCount>0?[h("span",{class:"badge"},String(neededCount))]:[ ]),
+    ...(mode==="shop"&&neededCount>0?[h("span",{class:"badge"},`${boughtCount}/${neededCount}`)]:[ ]),
   );
-
-  const searchWrap = mode==="plan" ? h("div",{class:"search-wrap"},
+  const searchWrap=mode==="plan"?h("div",{class:"search-wrap"},
     h("div",{class:"search-rel"},
       h("span",{class:"search-ico"},"🔍"),
       Object.assign(h("input",{class:"search-inp",placeholder:"חיפוש פריט...",value:search}),{
         oninput(e){search=e.target.value;addingIn=null;addDraft="";render();}
       })
     )
-  ) : null;
-
-  const hdr = h("div",{class:"hdr"},
-    h("div",{class:"hdr-top"},
-      h("div",{class:"title"},"🛒 הסל שלנו"),
-      hdrActions,
-    ),
+  ):null;
+  app.appendChild(h("div",{class:"hdr"},
+    h("div",{class:"hdr-top"},h("div",{class:"title"},"🛒 הסל שלנו"),hdrActions),
     h("div",{class:"tabs"},
-      h("button",{class:`tab ${mode==="plan"?"active":""}`,onClick:()=>{mode="plan";search="";addingIn=null;addDraft="";render();}},"📝 תכנון"),
+      h("button",{class:`tab ${mode==="plan"?"active":""}`,onClick:()=>{mode="plan";search="";addingIn=null;addDraft="";renamingCat=null;render();}},"📝 תכנון"),
       h("button",{class:`tab ${mode==="shop"?"active":""}`,onClick:()=>{mode="shop";render();}},"🏪 קנייה בסופר"),
     ),
     ...(searchWrap?[searchWrap]:[])
-  );
-  app.appendChild(hdr);
+  ));
 
-  // ── PLAN ──
-  if (mode==="plan") {
-    const scroll = h("div",{class:"scroll"});
-    if (neededCount===0&&!search) scroll.appendChild(h("p",{class:"hint"},"לחץ על פריטים להוספה לרשימה ↓"));
+  // ══ PLAN ══
+  if(mode==="plan") {
+    const scroll=h("div",{class:"scroll"});
+    if(neededCount===0&&!search) scroll.appendChild(h("p",{class:"hint"},"לחץ על פריטים להוספה לרשימה ↓"));
 
-    filtCats.forEach(cat => {
-      const allSel = cat.items.length>0 && cat.items.every(([n])=>state.needed.has(n));
-      const someSel = cat.items.some(([n])=>state.needed.has(n));
-      const catHd = h("div",{class:"cat-hd",onClick:()=>toggleCat(cat.id)},
-        h("div",{class:"cat-hd-left"},h("span",{},cat.emoji)," ",cat.label),
-        h("span",{class:"cat-sel-hint"},allSel?"✓ כל הפריטים":someSel?"לחץ לבחירת הכל":"לחץ לבחירת הכל")
-      );
-      const chips = h("div",{class:"chips"});
+    filtCats.forEach(cat=>{
+      // ── Cat header ──
+      let catHdContent;
+      if(renamingCat===cat.id) {
+        // Inline rename form
+        const inp=h("input",{class:"cat-rename-inp",value:renameDraft,placeholder:"שם הקטגוריה..."});
+        inp.oninput=e=>{renameDraft=e.target.value;};
+        inp.onkeydown=e=>{if(e.key==="Enter")confirmRename();if(e.key==="Escape")cancelRename();};
+        catHdContent=h("div",{class:"cat-rename-wrap"},
+          h("span",{style:"font-size:16px;margin-left:4px"},cat.emoji),
+          inp,
+          h("button",{class:"cat-rename-ok",onClick:confirmRename},"✓"),
+          h("button",{class:"cat-rename-x",onClick:cancelRename},"✕"),
+        );
+        setTimeout(()=>inp.focus(),30);
+      } else {
+        catHdContent=h("div",{class:"cat-hd-left"},
+          h("span",{},cat.emoji)," ",cat.label,
+        );
+      }
 
-      cat.items.forEach(([name,emoji]) => {
-        const sel = state.needed.has(name);
-        const isFav = state.favorites.has(name);
-        const isCustom = (state.custom[cat.id]||[]).includes(name);
-        const qty = state.quantities[name]||1;
-        const wrap = h("div",{class:"chip-wrap"});
-        const chip = h("button",{
-          class:`chip ${sel?"on":""} ${isFav&&!sel?"fav":""}`,
-          onClick:()=>toggleNeeded(name)
-        },
-          isFav&&!sel?"⭐ ":"",
-          sel?"✓ ":"",
-          name,
-          emoji?" "+emoji:"",
+      const renameBtn = cat.id!=="search" && renamingCat!==cat.id
+        ? h("button",{class:"cat-rename-btn",onClick:e=>{e.stopPropagation();startRename(cat.id,cat.label);},title:"שנה שם"},"✏️")
+        : null;
+
+      const catHd=h("div",{class:"cat-hd"},catHdContent,...(renameBtn?[renameBtn]:[]));
+      scroll.appendChild(catHd);
+
+      // ── Chips ──
+      const chips=h("div",{class:"chips"});
+      cat.items.forEach(([name,emoji])=>{
+        const sel=state.needed.has(name),isFav=state.favorites.has(name);
+        const isCustomItem=(state.custom[cat.id]||[]).includes(name);
+        const qty=state.quantities[name]||1, hasImg=!!state.images[name];
+        const wrap=h("div",{class:"chip-wrap"});
+        const displayName=state.itemNames[name]||name;
+        const chip=h("button",{class:`chip ${sel?"on":""} ${isFav&&!sel?"fav":""}`,onClick:()=>toggleNeeded(name)},
+          hasImg&&!sel?h("span",{class:"chip-img-dot"}):"",
+          isFav&&!sel?"⭐ ":"", sel?"✓ ":"",
+          displayName, emoji?" "+emoji:"",
           sel&&qty>1?h("span",{style:"font-size:11px;font-weight:800;opacity:.75;margin-right:2px"},` ×${qty}`):"",
         );
-        if (sel) {
-          const menuBtn = h("button",{class:"chip-menu-btn",onClick:(e)=>{e.stopPropagation();menu={name,catId:cat.id,isCustom};render();}},"⋮");
-          wrap.appendChild(chip);
-          wrap.appendChild(menuBtn);
-        } else {
-          wrap.appendChild(chip);
+        if(sel){
+          wrap.appendChild(h("button",{class:"chip-menu-btn",onClick:e=>{e.stopPropagation();menu={name,catId:cat.id,isCustom:isCustomItem};render();}},"⋮"));
         }
-        chips.appendChild(wrap);
+        wrap.appendChild(chip); chips.appendChild(wrap);
       });
-
-      // Add button
-      if (cat.id!=="search") {
-        if (addingIn===cat.id) {
-          const inp = h("input",{class:"add-inp",placeholder:"שם המוצר...",value:addDraft});
-          inp.oninput = e=>{addDraft=e.target.value;};
-          inp.onkeydown = e=>{if(e.key==="Enter")confirmAdd(cat.id);if(e.key==="Escape"){addingIn=null;addDraft="";render();}};
-          const inline = h("div",{class:"add-inline"},
-            inp,
+      if(cat.id!=="search"){
+        if(addingIn===cat.id){
+          const inp=h("input",{class:"add-inp",placeholder:"שם המוצר...",value:addDraft});
+          inp.oninput=e=>{addDraft=e.target.value;};
+          inp.onkeydown=e=>{if(e.key==="Enter")confirmAdd(cat.id);if(e.key==="Escape"){addingIn=null;addDraft="";render();}};
+          const inline=h("div",{class:"add-inline"},inp,
             h("button",{class:"add-ok",onClick:()=>confirmAdd(cat.id)},"✓"),
             h("button",{class:"add-x",onClick:()=>{addingIn=null;addDraft="";render();}},"✕"),
           );
-          chips.appendChild(inline);
-          setTimeout(()=>inp.focus(),50);
+          chips.appendChild(inline); setTimeout(()=>inp.focus(),50);
         } else {
           chips.appendChild(h("button",{class:"chip-add",onClick:()=>{addingIn=cat.id;addDraft="";render();}},"+ הוסף"));
         }
       }
-
-      scroll.appendChild(catHd);
       scroll.appendChild(chips);
     });
-    app.appendChild(scroll);
 
-    const bot = h("div",{class:"bot"},
-      ...(neededCount>0 ? [
+    // ── Add new category ──
+    if(!search){
+      const addCatSection=h("div",{class:"add-cat-wrap"});
+      if(addingCat){
+        const emojiInp=h("input",{class:"add-cat-emoji-inp",placeholder:"📦",value:addCatEmoji});
+        emojiInp.oninput=e=>{addCatEmoji=e.target.value;};
+        const nameInp=h("input",{class:"add-cat-name-inp",placeholder:"שם הקטגוריה...",value:addCatName});
+        nameInp.oninput=e=>{addCatName=e.target.value;};
+        nameInp.onkeydown=e=>{if(e.key==="Enter")confirmAddCat();if(e.key==="Escape"){addingCat=false;render();}};
+        const form=h("div",{class:"add-cat-form"},
+          h("div",{class:"add-cat-row"},emojiInp,nameInp),
+          h("div",{class:"add-cat-actions"},
+            h("button",{class:"add-cat-submit",onClick:confirmAddCat},"✓ צור קטגוריה"),
+            h("button",{class:"add-cat-cancel",onClick:()=>{addingCat=false;render();}},"ביטול"),
+          )
+        );
+        addCatSection.appendChild(form);
+        setTimeout(()=>nameInp.focus(),50);
+      } else {
+        addCatSection.appendChild(h("button",{class:"add-cat-btn",onClick:()=>{addingCat=true;addCatName="";addCatEmoji="";render();}},"+ הוסף קטגוריה חדשה"));
+      }
+      scroll.appendChild(addCatSection);
+    }
+
+    app.appendChild(scroll);
+    app.appendChild(h("div",{class:"bot"},
+      ...(neededCount>0?[
         h("button",{class:"btn-p",onClick:()=>{mode="shop";render();}},`🏪 עבור לקנייה (${neededCount})`),
         h("button",{class:"btn-d",onClick:clearAll},"🗑"),
-      ] : [h("div",{style:"flex:1;text-align:center;font-size:13px;color:#aaa;padding:12px 0;"},"הרשימה ריקה — בחר פריטים למעלה")])
-    );
-    app.appendChild(bot);
+      ]:[h("div",{style:"flex:1;text-align:center;font-size:13px;color:#aaa;padding:12px 0;"},"הרשימה ריקה — בחר פריטים למעלה")])
+    ));
   }
 
-  // ── SHOP ──
-  if (mode==="shop") {
-    if (neededCount>0) {
-      const prog = h("div",{class:"prog-wrap"},
+  // ══ SHOP ══
+  if(mode==="shop"){
+    if(neededCount>0){
+      app.appendChild(h("div",{class:"prog-wrap"},
         h("div",{class:"prog-track"},h("div",{class:"prog-fill",style:`width:${progress}%`})),
         h("div",{class:"prog-text"},h("span",{},`נותרו: ${neededCount-boughtCount} פריטים`),h("span",{},`${Math.round(progress)}% ✓`))
-      );
-      app.appendChild(prog);
+      ));
     }
-    const scroll = h("div",{class:"scroll"});
-    if (neededCount===0) {
+    const scroll=h("div",{class:"scroll"});
+    if(neededCount===0){
       scroll.appendChild(h("div",{class:"empty"},h("div",{class:"empty-ico"},"🛒"),h("div",{style:"font-weight:700;font-size:17px"},"הרשימה ריקה"),h("div",{style:"font-size:14px;margin-top:6px"},"עבור לתכנון כדי להוסיף פריטים")));
     } else {
-      shopCats.forEach(cat => {
+      shopCats.forEach(cat=>{
         scroll.appendChild(h("div",{class:"shop-cat"},cat.emoji," ",cat.label));
-        cat.items.forEach(([name,emoji]) => {
-          const done = state.bought.has(name);
-          const qty  = state.quantities[name]||1;
-          const item = h("div",{class:`shop-item ${done?"done":""}`},
+        cat.items.forEach(([name,emoji])=>{
+          const done=state.bought.has(name),qty=state.quantities[name]||1,imgUrl=state.images[name];
+          const displayName=state.itemNames[name]||name;
+          scroll.appendChild(h("div",{class:`shop-item ${done?"done":""}`},
             h("div",{class:"shop-left",onClick:()=>toggleBought(name)},
               h("div",{class:`chk ${done?"on":""}`},done?h("span",{class:"chk-ico"},"✓"):""),
-              h("span",{class:`iname ${done?"done":""}`},name,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
+              h("span",{class:`iname ${done?"done":""}`},displayName,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
             ),
+            ...(imgUrl?[h("img",{class:"item-thumb",src:imgUrl,alt:name,onClick:e=>{e.stopPropagation();fullImg=imgUrl;render();}})]:[ ]),
             h("div",{class:"qty-ctrl"},
               h("button",{class:"qty-btn",onClick:()=>adjustQty(name,-1)},"−"),
               h("span",{class:"qty-num"},String(qty)),
               h("button",{class:"qty-btn",onClick:()=>adjustQty(name,+1)},"+"),
             )
-          );
-          scroll.appendChild(item);
+          ));
         });
       });
     }
     app.appendChild(scroll);
-    const bot = h("div",{class:"bot"},
-      ...(boughtCount>0?[h("button",{class:"btn-p",onClick:finishShopping},`✅ סיים קנייה (${boughtCount})`)]:[]),
+    app.appendChild(h("div",{class:"bot"},
+      ...(boughtCount>0?[h("button",{class:"btn-p",onClick:finishShopping},`✅ סיים קנייה (${boughtCount})`)]:[ ]),
       h("button",{class:"btn-s",onClick:()=>{mode="plan";render();}},"← תכנון"),
-      ...(neededCount>0&&boughtCount===0?[h("div",{style:"flex:1;font-size:13px;color:#aaa;padding:12px 0;text-align:center"},"סמן פריטים שקנית ↑")]:[])
-    );
-    app.appendChild(bot);
+      ...(neededCount>0&&boughtCount===0?[h("div",{style:"flex:1;font-size:13px;color:#aaa;padding:12px 0;text-align:center"},"סמן פריטים שקנית ↑")]:[ ])
+    ));
   }
 
-  // ── Item menu overlay ──
-  if (menu) {
-    const qty = state.quantities[menu.name]||1;
-    const isFav = state.favorites.has(menu.name);
-    const overlay = h("div",{class:"overlay",onClick:()=>{menu=null;render();}},
+  // ══ Item menu ══
+  if(menu){
+    const qty=state.quantities[menu.name]||1,isFav=state.favorites.has(menu.name),imgUrl=state.images[menu.name];
+    const isUploading=uploadingFor===menu.name;
+    const imgSection=h("div",{},
+      ...(imgUrl?[h("div",{class:"img-preview-wrap"},
+        h("img",{class:"img-preview",src:imgUrl,alt:menu.name,onClick:()=>{fullImg=imgUrl;render();}}),
+        h("div",{class:"img-actions"},
+          h("label",{class:"img-upload-btn",onClick:()=>triggerImageUpload(menu.name)},"📷 החלף תמונה"),
+          h("button",{class:"img-remove-btn",onClick:()=>removeImage(menu.name)},"🗑 הסר תמונה"),
+        )
+      )]:[ ]),
+      ...(!imgUrl?[isUploading
+        ?h("div",{class:"img-preview-wrap"},h("div",{class:"img-uploading"},"⏳ מעלה תמונה..."))
+        :h("div",{style:"padding:4px 20px 8px"},h("label",{class:"img-upload-btn",onClick:()=>triggerImageUpload(menu.name)},"📷 הוסף תמונה לפריט"))
+      ]:[ ])
+    );
+    app.appendChild(h("div",{class:"overlay",onClick:()=>{menu=null;renamingCat=null;renameDraft="";render();}},
       h("div",{class:"sheet",onClick:e=>e.stopPropagation()},
         h("div",{class:"sheet-drag"}),
-        h("div",{class:"sheet-title"},menu.name),
-        h("button",{class:"sheet-row",onClick:()=>{toggleFav(menu.name);menu=null;render();}},
-          h("span",{},isFav?"☆ הסר ממועדפים":"⭐ הוסף למועדפים")
-        ),
+        // ── Title row with edit button ──
+        renamingCat==="item:"+menu.name
+          ? (()=>{
+              const inp=h("input",{style:"flex:1;padding:5px 10px;border:1.5px solid var(--gm);border-radius:8px;font-family:Heebo;font-size:16px;font-weight:800;direction:rtl;outline:none;color:var(--tx);background:white;",value:renameDraft});
+              inp.oninput=e=>{renameDraft=e.target.value;};
+              inp.onkeydown=e=>{if(e.key==="Enter")confirmItemRename();if(e.key==="Escape"){renamingCat=null;renameDraft="";render();}};
+              setTimeout(()=>inp.focus(),30);
+              return h("div",{style:"display:flex;align-items:center;gap:8px;padding:4px 20px 14px;border-bottom:1px solid var(--bd);margin-bottom:4px;"},inp,
+                h("button",{class:"cat-rename-ok",onClick:confirmItemRename},"✓"),
+                h("button",{class:"cat-rename-x",onClick:()=>{renamingCat=null;renameDraft="";render();}},"✕"),
+              );
+            })()
+          : h("div",{style:"display:flex;align-items:center;justify-content:space-between;padding:4px 20px 14px;border-bottom:1px solid var(--bd);margin-bottom:4px;"},
+              h("span",{style:"font-size:17px;font-weight:800;color:var(--tx);"}, state.itemNames[menu.name]||menu.name),
+              h("button",{class:"cat-rename-btn",style:"font-size:14px;opacity:.7;",onClick:()=>{renamingCat="item:"+menu.name;renameDraft=state.itemNames[menu.name]||menu.name;render();},title:"שנה שם"},"✏️"),
+            ),
+        h("button",{class:"sheet-row",onClick:()=>{toggleFav(menu.name);menu=null;render();}},h("span",{},isFav?"☆ הסר ממועדפים":"⭐ הוסף למועדפים")),
         h("div",{class:"sheet-row",style:"cursor:default"},
           h("span",{},"כמות לקנייה"),
           h("div",{class:"qty-stepper"},
@@ -465,38 +617,42 @@ function render() {
             h("button",{class:"sq-btn",onClick:()=>{adjustQty(menu.name,+1);render();}},"＋"),
           )
         ),
-        ...(menu.isCustom?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]:[]),
+        imgSection,
+        ...(menu.isCustom?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]:[ ]),
         h("button",{class:"sheet-row close",onClick:()=>{menu=null;render();}},"✕ סגור"),
       )
-    );
-    app.appendChild(overlay);
+    ));
   }
 
-  // ── History overlay ──
-  if (showHist && state.history) {
-    const overlay = h("div",{class:"overlay",onClick:()=>{showHist=false;render();}},
+  // ══ Full image ══
+  if(fullImg){
+    app.appendChild(h("div",{class:"img-full-overlay",onClick:()=>{fullImg=null;render();}},
+      h("button",{class:"img-full-close",onClick:()=>{fullImg=null;render();}},"✕"),
+      h("img",{class:"img-full",src:fullImg,onClick:e=>e.stopPropagation()})
+    ));
+  }
+
+  // ══ History ══
+  if(showHist&&state.history){
+    app.appendChild(h("div",{class:"overlay",onClick:()=>{showHist=false;render();}},
       h("div",{class:"sheet",onClick:e=>e.stopPropagation()},
         h("div",{class:"sheet-drag"}),
         h("div",{class:"sheet-title"},"🕐 קנינו בפעם האחרונה"),
         h("div",{style:"max-height:280px;overflow-y:auto;padding:6px 0"},
-          ...state.history.needed.map(name =>
-            h("div",{class:"hist-item"},
-              h("span",{},name),
-              ...(state.history.quantities?.[name]>1?[h("span",{style:"color:var(--mt);font-size:12px"},`×${state.history.quantities[name]}`)]:[])
-            )
-          )
+          ...state.history.needed.map(name=>h("div",{class:"hist-item"},
+            h("span",{},name),
+            ...(state.history.quantities?.[name]>1?[h("span",{style:"color:var(--mt);font-size:12px"},`×${state.history.quantities[name]}`)]:[ ])
+          ))
         ),
         h("div",{class:"hist-actions"},
           h("button",{class:"btn-p",style:"flex:1;padding:11px",onClick:restoreHistory},`← טען מחדש (${state.history.needed.length} פריטים)`),
           h("button",{class:"btn-s",onClick:()=>{showHist=false;render();}},"סגור"),
         )
       )
-    );
-    app.appendChild(overlay);
+    ));
   }
 }
 
-// ─── Boot ─────────────────────────────────────────────────────
 init();
 </script>
 </body>
