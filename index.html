@@ -461,8 +461,19 @@ function render() {
         ? h("button",{class:"cat-rename-btn",onClick:e=>{e.stopPropagation();startRename(cat.id,cat.label);},title:"שנה שם"},"✏️")
         : null;
 
-      const catHd=h("div",{class:"cat-hd"},catHdContent,...(renameBtn?[renameBtn]:[]));
-      scroll.appendChild(catHd);
+      const deleteBtn = cat.isCustomCat && renamingCat!==cat.id
+        ? h("button",{class:"cat-rename-btn",style:"color:var(--rd);opacity:.6;",onClick:e=>{
+            e.stopPropagation();
+            if(confirm('למחוק את הקטגוריה "'+cat.label+'" וכל הפריטים שלה?')) deleteCustomCat(cat.id);
+          },title:"מחק קטגוריה"},"🗑")
+        : null;
+
+      const catHd=h("div",{class:"cat-hd"},catHdContent,
+        h("div",{style:"display:flex;align-items:center;gap:2px;"},
+          ...(deleteBtn?[deleteBtn]:[]),
+          ...(renameBtn?[renameBtn]:[]),
+        )
+      );      scroll.appendChild(catHd);
 
       // ── Chips ──
       const chips=h("div",{class:"chips"});
