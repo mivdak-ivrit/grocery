@@ -354,8 +354,9 @@ function hideBaseItem(name, catId) {
 }
 function confirmItemRename() {
   const newName = renameDraft.trim();
-  if(newName && newName !== menu.name) {
-    state.itemNames[menu.name] = newName;
+  if(newName) {
+    if(newName === menu.name) delete state.itemNames[menu.name];
+    else state.itemNames[menu.name] = newName;
   }
   renamingCat=null; renameDraft=""; saveToFirestore(); render();
 }
@@ -409,6 +410,7 @@ function h(tag, attrs={}, ...children) {
   for(const[k,v] of Object.entries(attrs)){
     if(k==="class") el.className=v;
     else if(k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==="value"&&(tag==="input"||tag==="textarea")){el.setAttribute(k,v);el.value=v;}
     else el.setAttribute(k,v);
   }
   for(const c of children.flat()){
