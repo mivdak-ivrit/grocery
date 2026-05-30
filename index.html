@@ -230,6 +230,7 @@ async function uploadImageFromUrl(name, url) {
   const file = new File([blob], "img.jpg", {type: blob.type});
   return uploadImage(name, file);
 }
+async function uploadImage(name, file) {
   const blob = await compressImage(file);
   const r = ref(storage, `items/${encodeURIComponent(name)}.jpg`);
   await uploadBytes(r, blob, {contentType:"image/jpeg"});
@@ -691,17 +692,20 @@ function render() {
         :h("div",{style:"padding:4px 20px 8px;display:flex;flex-direction:column;gap:7px;"},
             h("label",{class:"img-upload-btn",onClick:()=>triggerImageUpload(menu.name)},"📷 הוסף תמונה (צילום / קובץ)"),
             showUrlInput
-              ? h("div",{class:"img-url-wrap",style:"padding:0;"},
-                  h("div",{class:"img-url-row"},
-                    Object.assign(h("input",{class:"img-url-inp",placeholder:"https://...",value:urlDraft}),{
-                      oninput(e){urlDraft=e.target.value;},
-                      onkeydown(e){if(e.key==="Enter")handleUrlUpload();if(e.key==="Escape"){urlInputFor=null;urlDraft="";render();}},
-                    }),
-                    h("button",{class:"img-url-btn",onClick:handleUrlUpload},"✓"),
-                    h("button",{style:"padding:8px 10px;border:none;background:#eee;color:#888;border-radius:10px;cursor:pointer;font-size:13px;",onClick:()=>{urlInputFor=null;urlDraft="";render();}},"✕"),
-                  ),
-                  setTimeout(()=>document.querySelector(".img-url-inp")?.focus(),40),
-                )
+              ? (()=>{
+                  const urlWrap=h("div",{class:"img-url-wrap",style:"padding:0;"},
+                    h("div",{class:"img-url-row"},
+                      Object.assign(h("input",{class:"img-url-inp",placeholder:"https://...",value:urlDraft}),{
+                        oninput(e){urlDraft=e.target.value;},
+                        onkeydown(e){if(e.key==="Enter")handleUrlUpload();if(e.key==="Escape"){urlInputFor=null;urlDraft="";render();}},
+                      }),
+                      h("button",{class:"img-url-btn",onClick:handleUrlUpload},"✓"),
+                      h("button",{style:"padding:8px 10px;border:none;background:#eee;color:#888;border-radius:10px;cursor:pointer;font-size:13px;",onClick:()=>{urlInputFor=null;urlDraft="";render();}},"✕"),
+                    ),
+                  );
+                  setTimeout(()=>document.querySelector(".img-url-inp")?.focus(),40);
+                  return urlWrap;
+                })()
               : h("button",{class:"img-url-toggle",onClick:()=>{urlInputFor=menu.name;urlDraft="";render();}},"🔗 הוסף מקישור (COOP, Hemköp...)"),
           )
       ]:[ ])
