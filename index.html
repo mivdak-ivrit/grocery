@@ -130,14 +130,19 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .hint{text-align:center;padding:14px 0 2px;font-size:13px;color:var(--mt);}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-right:4px;}
 .sync-dot.off{background:#f87171;}
-.chip-img-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gm);margin-right:4px;vertical-align:middle;}
+.chip-note-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#5b8dd9;margin-right:4px;vertical-align:middle;}
+.note-wrap{padding:6px 20px 10px;}
+.note-label{font-size:12px;font-weight:700;color:var(--mt);margin-bottom:5px;}
+.note-inp{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-family:Heebo;font-size:14px;direction:rtl;outline:none;color:var(--tx);resize:none;min-height:72px;background:white;}
+.note-inp:focus{border-color:var(--gm);}
+.shop-item-note{font-size:12px;color:#888;margin-top:2px;font-style:italic;}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="loading"><div class="loading-spinner"></div><span>מתחבר...</span></div>
 </div>
-<input type="file" id="img-file-input" accept="image/*" capture="environment" style="display:none"/>
+<input type="file" id="img-file-input" accept="image/*" style="display:none"/>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -183,6 +188,8 @@ let state = {
   itemNames: {},        // { origName: "display name" }
   quantities: {}, favorites: new Set(),
   history: null, images: {},
+  notes: {},            // { itemName: "note text" }
+  hiddenItems: new Set(), // base items hidden (soft-deleted)
 };
 let mode="plan", search="", addingIn=null, addDraft="";
 let menu=null, showHist=false, fullImg=null;
@@ -237,6 +244,8 @@ async function saveToFirestore() {
       itemNames:state.itemNames,
       quantities:state.quantities, favorites:[...state.favorites],
       history:state.history||null, images:state.images,
+      notes:state.notes,
+      hiddenItems:[...state.hiddenItems],
     });
   } catch(e){ console.warn("save failed",e); }
 }
@@ -258,6 +267,8 @@ function mergeRemote(data) {
   state.favorites=new Set([...state.favorites,...(data.favorites||[])]);
   if(!state.history&&data.history) state.history=data.history;
   state.images={...(data.images||{}),...state.images};
+  state.notes={...(data.notes||{}),...state.notes};
+  state.hiddenItems=new Set([...state.hiddenItems,...(data.hiddenItems||[])]);
 }
 
 async function init() {
@@ -327,7 +338,20 @@ function clearAll(){
   saveToFirestore(); render();
 }
 
-// ─── Item rename ──────────────────────────────────────────────
+// ─── Notes ────────────────────────────────────────────────────
+function saveNote(name, text) {
+  if(text.trim()) state.notes[name]=text.trim();
+  else delete state.notes[name];
+  saveToFirestore(); render();
+}
+
+// ─── Hide base item (soft delete) ─────────────────────────────
+function hideBaseItem(name, catId) {
+  state.hiddenItems.add(name);
+  state.needed.delete(name); state.bought.delete(name);
+  if(state.images[name]){removeImage(name);return;}
+  menu=null; saveToFirestore(); render();
+}
 function confirmItemRename() {
   const newName = renameDraft.trim();
   if(newName && newName !== menu.name) {
@@ -366,7 +390,7 @@ function categories() {
   const baseCats = BASE_CATS.map(cat=>({
     ...cat,
     label: state.catNames[cat.id]||cat.label,
-    items:[...cat.items,...(state.custom[cat.id]||[]).map(n=>[n,""])],
+    items:[...cat.items.filter(([n])=>!state.hiddenItems.has(n)),...(state.custom[cat.id]||[]).map(n=>[n,""])],
     isCustomCat: false,
   }));
   const userCats = state.customCats.map(cat=>({
@@ -483,8 +507,9 @@ function render() {
         const qty=state.quantities[name]||1, hasImg=!!state.images[name];
         const wrap=h("div",{class:"chip-wrap"});
         const displayName=state.itemNames[name]||name;
+        const hasNote=!!(state.notes[name]);
         const chip=h("button",{class:`chip ${sel?"on":""} ${isFav&&!sel?"fav":""}`,onClick:()=>toggleNeeded(name)},
-          hasImg&&!sel?h("span",{class:"chip-img-dot"}):"",
+          hasNote&&!sel?h("span",{class:"chip-note-dot"}):"",
           isFav&&!sel?"⭐ ":"", sel?"✓ ":"",
           displayName, emoji?" "+emoji:"",
           sel&&qty>1?h("span",{style:"font-size:11px;font-weight:800;opacity:.75;margin-right:2px"},` ×${qty}`):"",
@@ -562,10 +587,14 @@ function render() {
         cat.items.forEach(([name,emoji])=>{
           const done=state.bought.has(name),qty=state.quantities[name]||1,imgUrl=state.images[name];
           const displayName=state.itemNames[name]||name;
+          const note=state.notes[name]||"";
           scroll.appendChild(h("div",{class:`shop-item ${done?"done":""}`},
             h("div",{class:"shop-left",onClick:()=>toggleBought(name)},
               h("div",{class:`chk ${done?"on":""}`},done?h("span",{class:"chk-ico"},"✓"):""),
-              h("span",{class:`iname ${done?"done":""}`},displayName,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
+              h("div",{style:"display:flex;flex-direction:column;"},
+                h("span",{class:`iname ${done?"done":""}`},displayName,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
+                ...(note?[h("span",{class:"shop-item-note"},note)]:[ ]),
+              ),
             ),
             ...(imgUrl?[h("img",{class:"item-thumb",src:imgUrl,alt:name,onClick:e=>{e.stopPropagation();fullImg=imgUrl;render();}})]:[ ]),
             h("div",{class:"qty-ctrl"},
@@ -631,7 +660,19 @@ function render() {
           )
         ),
         imgSection,
-        ...(menu.isCustom?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]:[ ]),
+        // ── Notes ──
+        h("div",{class:"note-wrap"},
+          h("div",{class:"note-label"},"📝 הערה"),
+          Object.assign(h("textarea",{class:"note-inp",placeholder:"הוסף הערה לפריט (כמות ספציפית, מותג, וכו׳)..."}),{
+            value: state.notes[menu.name]||"",
+            oninput(e){ state.notes[menu.name]=e.target.value; },
+            onblur(e){ saveNote(menu.name, e.target.value); },
+          })
+        ),
+        ...(menu.isCustom
+          ?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]
+          :[h("button",{class:"sheet-row red",onClick:()=>hideBaseItem(menu.name,menu.catId)},"🗑 הסר מהרשימה")]
+        ),
         h("button",{class:"sheet-row close",onClick:()=>{menu=null;render();}},"✕ סגור"),
       )
     ));
