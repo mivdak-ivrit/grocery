@@ -619,6 +619,7 @@ function render() {
           const done=state.bought.has(name),qty=state.quantities[name]||1,imgUrl=state.images[name];
           const displayName=state.itemNames[name]||name;
           const note=state.notes[name]||"";
+          const isCustomItem=(state.custom[cat.id]||[]).includes(name);
           scroll.appendChild(h("div",{class:`shop-item ${done?"done":""}`},
             h("div",{class:"shop-left",onClick:()=>toggleBought(name)},
               h("div",{class:`chk ${done?"on":""}`},done?h("span",{class:"chk-ico"},"✓"):""),
@@ -632,7 +633,8 @@ function render() {
               h("button",{class:"qty-btn",onClick:()=>adjustQty(name,-1)},"−"),
               h("span",{class:"qty-num"},String(qty)),
               h("button",{class:"qty-btn",onClick:()=>adjustQty(name,+1)},"+"),
-            )
+            ),
+            h("button",{class:"qty-btn",style:"font-size:14px;font-weight:400;",onClick:e=>{e.stopPropagation();menu={name,catId:cat.id,isCustom:isCustomItem};render();}},"⋮"),
           ));
         });
       });
