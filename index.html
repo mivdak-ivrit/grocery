@@ -115,12 +115,6 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .img-actions{display:flex;flex-direction:column;gap:8px;}
 .img-upload-btn{padding:8px 16px;border-radius:10px;border:1.5px solid var(--g);background:var(--gl);color:var(--g);font-family:Heebo;font-size:14px;font-weight:600;cursor:pointer;text-align:center;}
 .img-remove-btn{padding:6px 14px;border-radius:10px;border:1.5px solid #f5ccc8;background:#fff0ee;color:var(--rd);font-family:Heebo;font-size:13px;cursor:pointer;}
-.img-url-wrap{padding:4px 20px 10px;}
-.img-url-row{display:flex;gap:7px;align-items:center;}
-.img-url-inp{flex:1;padding:8px 11px;border:1.5px solid var(--bd);border-radius:10px;font-family:Heebo;font-size:13px;direction:ltr;outline:none;color:var(--tx);background:white;}
-.img-url-inp:focus{border-color:var(--gm);}
-.img-url-btn{padding:8px 13px;border:none;background:var(--g);color:white;border-radius:10px;font-family:Heebo;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
-.img-url-toggle{padding:6px 14px;border-radius:10px;border:1.5px solid var(--bd);background:white;color:var(--mt);font-family:Heebo;font-size:13px;cursor:pointer;width:100%;text-align:right;}
 .img-full-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:600;display:flex;align-items:center;justify-content:center;}
 .img-full{max-width:95vw;max-height:85vh;border-radius:14px;object-fit:contain;}
 .img-full-close{position:absolute;top:18px;left:18px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
@@ -205,7 +199,6 @@ let renamingCat=null, renameDraft="";     // catId being renamed
 let addingCat=false, addCatEmoji="", addCatName="";
 let connected=false, ignoreNext=false;
 let uploadingFor=null;
-let urlInputFor=null, urlDraft="";
 
 // ─── Image ────────────────────────────────────────────────────
 function compressImage(file) {
@@ -219,16 +212,6 @@ function compressImage(file) {
       c.toBlob(resolve,"image/jpeg",0.75); URL.revokeObjectURL(url);
     }; img.src=url;
   });
-}
-async function uploadImageFromUrl(name, url) {
-  // Use allorigins proxy to bypass CORS on retailer sites
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-  const resp = await fetch(proxyUrl);
-  if(!resp.ok) throw new Error("לא ניתן לטעון את התמונה");
-  const blob = await resp.blob();
-  if(!blob.type.startsWith("image/")) throw new Error("הקישור אינו תמונה");
-  const file = new File([blob], "img.jpg", {type: blob.type});
-  return uploadImage(name, file);
 }
 async function uploadImage(name, file) {
   const blob = await compressImage(file);
@@ -666,19 +649,6 @@ function render() {
   if(menu){
     const qty=state.quantities[menu.name]||1,isFav=state.favorites.has(menu.name),imgUrl=state.images[menu.name];
     const isUploading=uploadingFor===menu.name;
-    const showUrlInput=urlInputFor===menu.name;
-
-    // URL upload handler
-    async function handleUrlUpload() {
-      const url=urlDraft.trim(); if(!url) return;
-      uploadingFor=menu.name; urlInputFor=null; urlDraft=""; render();
-      try {
-        const dlUrl=await uploadImageFromUrl(menu.name, url);
-        state.images[menu.name]=dlUrl; await saveToFirestore();
-      } catch(e) { alert("שגיאה: "+e.message); }
-      uploadingFor=null; render();
-    }
-
     const imgSection=h("div",{},
       ...(imgUrl?[h("div",{class:"img-preview-wrap"},
         h("img",{class:"img-preview",src:imgUrl,alt:menu.name,onClick:()=>{fullImg=imgUrl;render();}}),
@@ -689,28 +659,10 @@ function render() {
       )]:[ ]),
       ...(!imgUrl?[isUploading
         ?h("div",{class:"img-preview-wrap"},h("div",{class:"img-uploading"},"⏳ מעלה תמונה..."))
-        :h("div",{style:"padding:4px 20px 8px;display:flex;flex-direction:column;gap:7px;"},
-            h("label",{class:"img-upload-btn",onClick:()=>triggerImageUpload(menu.name)},"📷 הוסף תמונה (צילום / קובץ)"),
-            showUrlInput
-              ? (()=>{
-                  const urlWrap=h("div",{class:"img-url-wrap",style:"padding:0;"},
-                    h("div",{class:"img-url-row"},
-                      Object.assign(h("input",{class:"img-url-inp",placeholder:"https://...",value:urlDraft}),{
-                        oninput(e){urlDraft=e.target.value;},
-                        onkeydown(e){if(e.key==="Enter")handleUrlUpload();if(e.key==="Escape"){urlInputFor=null;urlDraft="";render();}},
-                      }),
-                      h("button",{class:"img-url-btn",onClick:handleUrlUpload},"✓"),
-                      h("button",{style:"padding:8px 10px;border:none;background:#eee;color:#888;border-radius:10px;cursor:pointer;font-size:13px;",onClick:()=>{urlInputFor=null;urlDraft="";render();}},"✕"),
-                    ),
-                  );
-                  setTimeout(()=>document.querySelector(".img-url-inp")?.focus(),40);
-                  return urlWrap;
-                })()
-              : h("button",{class:"img-url-toggle",onClick:()=>{urlInputFor=menu.name;urlDraft="";render();}},"🔗 הוסף מקישור (COOP, Hemköp...)"),
-          )
+        :h("div",{style:"padding:4px 20px 8px"},h("label",{class:"img-upload-btn",onClick:()=>triggerImageUpload(menu.name)},"📷 הוסף תמונה לפריט"))
       ]:[ ])
     );
-    app.appendChild(h("div",{class:"overlay",onClick:()=>{menu=null;renamingCat=null;renameDraft="";urlInputFor=null;urlDraft="";render();}},
+    app.appendChild(h("div",{class:"overlay",onClick:()=>{menu=null;renamingCat=null;renameDraft="";render();}},
       h("div",{class:"sheet",onClick:e=>e.stopPropagation()},
         h("div",{class:"sheet-drag"}),
         // ── Title row with edit button ──
@@ -780,7 +732,7 @@ function render() {
           ?[h("button",{class:"sheet-row red",onClick:()=>deleteCustom(menu.name,menu.catId)},"🗑 מחק לצמיתות מהרשימה")]
           :[h("button",{class:"sheet-row red",onClick:()=>hideBaseItem(menu.name,menu.catId)},"🗑 הסר מהרשימה")]
         ),
-        h("button",{class:"sheet-row close",onClick:()=>{menu=null;urlInputFor=null;urlDraft="";render();}},"✕ סגור"),
+        h("button",{class:"sheet-row close",onClick:()=>{menu=null;render();}},"✕ סגור"),
       )
     ));
   }
