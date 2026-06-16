@@ -137,6 +137,10 @@ body{background:#f7f3ee;font-family:'Heebo',sans-serif;direction:rtl;}
 .chip-stat{font-size:10px;font-weight:700;color:var(--mt);opacity:.75;margin-right:3px;vertical-align:middle;}
 .chip.on .chip-stat{color:rgba(255,255,255,.6);}
 .shop-item-note{font-size:12px;color:#888;margin-top:2px;font-style:italic;}
+.undo-toast{position:fixed;bottom:78px;left:50%;transform:translate(-50%,0);width:calc(100% - 28px);max-width:452px;background:#2a2018;color:white;padding:11px 16px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;z-index:250;font-size:13.5px;box-shadow:0 4px 14px rgba(0,0,0,.3);animation:slideUp .2s ease;}
+.undo-toast span{flex:1;}
+.undo-btn{background:rgba(255,255,255,.18);border:none;color:var(--y);font-family:Heebo;font-weight:700;font-size:13.5px;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+@keyframes slideUp{from{transform:translate(-50%,12px);opacity:0;}to{transform:translate(-50%,0);opacity:1;}}
 </style>
 </head>
 <body>
@@ -182,7 +186,7 @@ const BASE_CATS = [
 
 // ─── State ────────────────────────────────────────────────────
 let state = {
-  needed: new Set(), bought: new Set(),
+  needed: new Set(),
   custom: {},           // { catId: ["item",...] } — extra items in any category
   customCats: [],       // [{ id, emoji, label }] — new user-created categories
   catNames: {},         // { catId: "renamed label" }
@@ -192,6 +196,7 @@ let state = {
   notes: {},            // { itemName: "note text" }
   hiddenItems: new Set(), // base items hidden (soft-deleted)
   purchaseLog: {},      // { itemName: [timestamp, timestamp, ...] }
+  sessionLog: {},        // { itemName: qty } — items bought in the current shopping trip, not yet finalized into history
 };
 let mode="plan", search="", addingIn=null, addDraft="";
 let menu=null, showHist=false, fullImg=null;
@@ -199,6 +204,7 @@ let renamingCat=null, renameDraft="";     // catId being renamed
 let addingCat=false, addCatEmoji="", addCatName="";
 let connected=false, ignoreNext=false;
 let uploadingFor=null;
+let lastBought=null, undoTimeoutId=null;  // { name, catId, qty, timestamp, finalizedHistory, prevHistory, fullSessionAtFinalize }
 
 // ─── Image ────────────────────────────────────────────────────
 function compressImage(file) {
@@ -241,7 +247,7 @@ async function saveToFirestore() {
   ignoreNext=true;
   try {
     await setDoc(docRef, {
-      needed:[...state.needed], bought:[...state.bought],
+      needed:[...state.needed],
       custom:state.custom, customCats:state.customCats, catNames:state.catNames,
       itemNames:state.itemNames,
       quantities:state.quantities, favorites:[...state.favorites],
@@ -249,15 +255,15 @@ async function saveToFirestore() {
       notes:state.notes,
       hiddenItems:[...state.hiddenItems],
       purchaseLog:state.purchaseLog,
+      sessionLog:state.sessionLog,
     });
   } catch(e){ console.warn("save failed",e); }
 }
 
 function mergeRemote(data) {
   if(!data) return;
-  const rn=new Set(data.needed||[]), rb=new Set(data.bought||[]);
+  const rn=new Set(data.needed||[]);
   state.needed=new Set([...state.needed,...rn]);
-  state.bought=new Set([...[...state.bought].filter(x=>state.needed.has(x)),...[...rb].filter(x=>state.needed.has(x))]);
   const rc=data.custom||{};
   for(const[k,v] of Object.entries(rc)){const s=new Set(state.custom[k]||[]);v.forEach(i=>s.add(i));state.custom[k]=[...s];}
   // merge custom cats (union by id)
@@ -272,6 +278,7 @@ function mergeRemote(data) {
   state.images={...(data.images||{}),...state.images};
   state.notes={...(data.notes||{}),...state.notes};
   state.hiddenItems=new Set([...state.hiddenItems,...(data.hiddenItems||[])]);
+  state.sessionLog={...(data.sessionLog||{}),...state.sessionLog};
   // merge purchaseLog: union timestamps per item
   const rlog=data.purchaseLog||{};
   for(const[item,ts] of Object.entries(rlog)){
@@ -294,14 +301,58 @@ async function init() {
 
 // ─── Mutations ────────────────────────────────────────────────
 function toggleNeeded(name){
-  if(state.needed.has(name)){state.needed.delete(name);state.bought.delete(name);}
+  if(state.needed.has(name)) state.needed.delete(name);
   else state.needed.add(name);
   saveToFirestore(); render();
 }
-function toggleBought(name){
-  state.bought.has(name)?state.bought.delete(name):state.bought.add(name);
+function buyItem(name, catId) {
+  const qty=state.quantities[name]||1;
+  const now=Date.now();
+  const willEmptySession = state.needed.size===1; // this is the last item left in the cart
+  const prevHistory = willEmptySession ? state.history : null;
+
+  state.needed.delete(name);
+  if(!state.purchaseLog[name]) state.purchaseLog[name]=[];
+  state.purchaseLog[name].push(now);
+  if(!state.sessionLog) state.sessionLog={};
+  state.sessionLog[name]=qty;
+
+  let fullSessionAtFinalize=null;
+  if(willEmptySession){
+    fullSessionAtFinalize={...state.sessionLog};
+    state.history={needed:Object.keys(fullSessionAtFinalize),quantities:fullSessionAtFinalize};
+    state.sessionLog={};
+  }
+
+  lastBought={name,catId,qty,timestamp:now,finalizedHistory:willEmptySession,prevHistory,fullSessionAtFinalize};
+  clearTimeout(undoTimeoutId);
+  undoTimeoutId=setTimeout(()=>{lastBought=null;render();},5000);
+
   saveToFirestore(); render();
 }
+function undoLastBought(){
+  if(!lastBought) return;
+  const {name,qty,timestamp,finalizedHistory,prevHistory,fullSessionAtFinalize}=lastBought;
+  clearTimeout(undoTimeoutId);
+  state.needed.add(name);
+  if(qty>1) state.quantities[name]=qty;
+  const arr=state.purchaseLog[name];
+  if(arr&&arr.length){
+    const idx=arr.lastIndexOf(timestamp);
+    if(idx!==-1) arr.splice(idx,1);
+    if(arr.length===0) delete state.purchaseLog[name];
+  }
+  if(finalizedHistory){
+    state.history=prevHistory;
+    const restored={...fullSessionAtFinalize}; delete restored[name];
+    state.sessionLog=restored;
+  } else {
+    delete state.sessionLog[name];
+  }
+  lastBought=null;
+  saveToFirestore(); render();
+}
+function clearUndo(){ lastBought=null; clearTimeout(undoTimeoutId); }
 function toggleFav(name){
   state.favorites.has(name)?state.favorites.delete(name):state.favorites.add(name);
   saveToFirestore(); render();
@@ -326,22 +377,9 @@ async function confirmAdd(catId){
 }
 function deleteCustom(name,catId){
   state.custom[catId]=(state.custom[catId]||[]).filter(n=>n!==name);
-  state.needed.delete(name); state.bought.delete(name);
+  state.needed.delete(name);
   if(state.images[name]){removeImage(name);return;}
   menu=null; saveToFirestore(); render();
-}
-function finishShopping(){
-  const jb=[...state.needed].filter(n=>state.bought.has(n));
-  if(jb.length>0) state.history={needed:jb,quantities:{...state.quantities}};
-  // record purchase timestamps
-  const now=Date.now();
-  jb.forEach(name=>{
-    if(!state.purchaseLog[name]) state.purchaseLog[name]=[];
-    state.purchaseLog[name].push(now);
-  });
-  state.needed=new Set([...state.needed].filter(n=>!state.bought.has(n)));
-  state.bought=new Set();
-  saveToFirestore(); render();
 }
 function restoreHistory(){
   if(!state.history) return;
@@ -350,7 +388,7 @@ function restoreHistory(){
   showHist=false; saveToFirestore(); render();
 }
 function clearAll(){
-  state.needed=new Set(); state.bought=new Set();
+  state.needed=new Set();
   saveToFirestore(); render();
 }
 
@@ -377,7 +415,7 @@ function saveNote(name, text) {
 // ─── Hide base item (soft delete) ─────────────────────────────
 function hideBaseItem(name, catId) {
   state.hiddenItems.add(name);
-  state.needed.delete(name); state.bought.delete(name);
+  state.needed.delete(name);
   if(state.images[name]){removeImage(name);return;}
   menu=null; saveToFirestore(); render();
 }
@@ -453,8 +491,9 @@ function render() {
   const app=document.getElementById("app"); app.innerHTML="";
   const cats=categories();
   const neededCount=state.needed.size;
-  const boughtCount=[...state.needed].filter(n=>state.bought.has(n)).length;
-  const progress=neededCount>0?(boughtCount/neededCount)*100:0;
+  const boughtCount=Object.keys(state.sessionLog||{}).length;
+  const sessionTotal=neededCount+boughtCount;
+  const progress=sessionTotal>0?(boughtCount/sessionTotal)*100:0;
   const favCount=[...state.favorites].filter(n=>!state.needed.has(n)).length;
   const filtCats=search.trim()
     ?[{id:"search",emoji:"🔍",label:"תוצאות",items:allItems().filter(i=>i.name.includes(search.trim())).map(i=>[i.name,i.emoji]),isCustomCat:false}]
@@ -467,7 +506,7 @@ function render() {
     ...(state.history&&mode==="plan"?[h("button",{class:"icon-btn",onClick:()=>{showHist=true;render();}},"🕐")]:[ ]),
     h("span",{},h("span",{class:`sync-dot ${connected?"":"off"}`})),
     ...(mode==="plan"&&neededCount>0?[h("span",{class:"badge"},String(neededCount))]:[ ]),
-    ...(mode==="shop"&&neededCount>0?[h("span",{class:"badge"},`${boughtCount}/${neededCount}`)]:[ ]),
+    ...(mode==="shop"&&sessionTotal>0?[h("span",{class:"badge"},`${boughtCount}/${sessionTotal}`)]:[ ]),
   );
   const searchWrap=mode==="plan"?h("div",{class:"search-wrap"},
     h("div",{class:"search-rel"},
@@ -480,7 +519,7 @@ function render() {
   app.appendChild(h("div",{class:"hdr"},
     h("div",{class:"hdr-top"},h("div",{class:"title"},"🛒 הסל שלנו"),hdrActions),
     h("div",{class:"tabs"},
-      h("button",{class:`tab ${mode==="plan"?"active":""}`,onClick:()=>{mode="plan";search="";addingIn=null;addDraft="";renamingCat=null;render();}},"📝 תכנון"),
+      h("button",{class:`tab ${mode==="plan"?"active":""}`,onClick:()=>{mode="plan";search="";addingIn=null;addDraft="";renamingCat=null;clearUndo();render();}},"📝 תכנון"),
       h("button",{class:`tab ${mode==="shop"?"active":""}`,onClick:()=>{mode="shop";render();}},"🏪 קנייה בסופר"),
     ),
     ...(searchWrap?[searchWrap]:[])
@@ -603,28 +642,28 @@ function render() {
 
   // ══ SHOP ══
   if(mode==="shop"){
-    if(neededCount>0){
+    if(sessionTotal>0){
       app.appendChild(h("div",{class:"prog-wrap"},
         h("div",{class:"prog-track"},h("div",{class:"prog-fill",style:`width:${progress}%`})),
-        h("div",{class:"prog-text"},h("span",{},`נותרו: ${neededCount-boughtCount} פריטים`),h("span",{},`${Math.round(progress)}% ✓`))
+        h("div",{class:"prog-text"},h("span",{},`נותרו: ${neededCount} פריטים`),h("span",{},`${Math.round(progress)}% ✓`))
       ));
     }
     const scroll=h("div",{class:"scroll"});
     if(neededCount===0){
-      scroll.appendChild(h("div",{class:"empty"},h("div",{class:"empty-ico"},"🛒"),h("div",{style:"font-weight:700;font-size:17px"},"הרשימה ריקה"),h("div",{style:"font-size:14px;margin-top:6px"},"עבור לתכנון כדי להוסיף פריטים")));
+      scroll.appendChild(h("div",{class:"empty"},h("div",{class:"empty-ico"},"🛒"),h("div",{style:"font-weight:700;font-size:17px"},lastBought&&lastBought.finalizedHistory?"סיימת לקנות! 🎉":"הרשימה ריקה"),h("div",{style:"font-size:14px;margin-top:6px"},"עבור לתכנון כדי להוסיף פריטים")));
     } else {
       shopCats.forEach(cat=>{
         scroll.appendChild(h("div",{class:"shop-cat"},cat.emoji," ",cat.label));
         cat.items.forEach(([name,emoji])=>{
-          const done=state.bought.has(name),qty=state.quantities[name]||1,imgUrl=state.images[name];
+          const qty=state.quantities[name]||1,imgUrl=state.images[name];
           const displayName=state.itemNames[name]||name;
           const note=state.notes[name]||"";
           const isCustomItem=(state.custom[cat.id]||[]).includes(name);
-          scroll.appendChild(h("div",{class:`shop-item ${done?"done":""}`},
-            h("div",{class:"shop-left",onClick:()=>toggleBought(name)},
-              h("div",{class:`chk ${done?"on":""}`},done?h("span",{class:"chk-ico"},"✓"):""),
+          scroll.appendChild(h("div",{class:"shop-item"},
+            h("div",{class:"shop-left",onClick:()=>buyItem(name,cat.id)},
+              h("div",{class:"chk"}),
               h("div",{style:"display:flex;flex-direction:column;"},
-                h("span",{class:`iname ${done?"done":""}`},displayName,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
+                h("span",{class:"iname"},displayName,(emoji?" "+emoji:"")+(qty>1?` ×${qty}`:"")),
                 ...(note?[h("span",{class:"shop-item-note"},note)]:[ ]),
               ),
             ),
@@ -641,10 +680,15 @@ function render() {
     }
     app.appendChild(scroll);
     app.appendChild(h("div",{class:"bot"},
-      ...(boughtCount>0?[h("button",{class:"btn-p",onClick:finishShopping},`✅ סיים קנייה (${boughtCount})`)]:[ ]),
-      h("button",{class:"btn-s",onClick:()=>{mode="plan";render();}},"← תכנון"),
-      ...(neededCount>0&&boughtCount===0?[h("div",{style:"flex:1;font-size:13px;color:#aaa;padding:12px 0;text-align:center"},"סמן פריטים שקנית ↑")]:[ ])
+      h("button",{class:"btn-s",onClick:()=>{mode="plan";clearUndo();render();}},"← תכנון"),
+      ...(neededCount>0?[h("div",{style:"flex:1;font-size:13px;color:#aaa;padding:12px 0;text-align:center"},"לחץ על פריט כדי לסמן שנקנה")]:[ ])
     ));
+    if(lastBought){
+      app.appendChild(h("div",{class:"undo-toast"},
+        h("span",{},`✓ ${state.itemNames[lastBought.name]||lastBought.name} נקנה`),
+        h("button",{class:"undo-btn",onClick:undoLastBought},"↩ בטל"),
+      ));
+    }
   }
 
   // ══ Item menu ══
